@@ -101,7 +101,8 @@ const WORDS = [
   ["fast","빠른"],["slow","느린"],["early","이른"],["late","늦은"],["beautiful","아름다운"],["kind","친절한"],["smart","똑똑한"],["strong","강한"],["weak","약한"],["clean","깨끗한"],
   ["home","집"],["room","방"],["door","문"],["window","창문"],["street","거리"],["city","도시"],["country","나라"],["store","가게"],["market","시장"],["hospital","병원"]
 ]; // 120쌍
-
+// ✅ (구글시트 저장용) 본인 웹앱 /exec URL로 교체하세요
+const SHEETS_WEBAPP_URL = "https://script.google.com/macros/s/여기/exec";
 /* ===============================
    1) 유틸
    =============================== */
@@ -477,7 +478,43 @@ function renderSectionResult(){
 
   return el("div",{class:"row"}, main, side);
 }
+async function submitResultToSheet() {
+  if (!SHEETS_WEBAPP_URL || !SHEETS_WEBAPP_URL.includes("/exec")) {
+    alert("교사용 저장 URL이 설정되지 않았습니다. (/exec URL 확인)");
+    return;
+  }
 
+  const sc = score();
+  const payload = {
+    player_name: state.player?.name || "",
+    player_group: state.player?.group || "",
+    total: sc.total,
+    level: levelFromTotal(sc.total),
+    rookie: sc.by.ROOKIE,
+    explorer: sc.by.EXPLORER,
+    master: sc.by.MASTER,
+    unlocked_explorer: !!state.unlocked?.EXPLORER,
+    unlocked_master: !!state.unlocked?.MASTER,
+    answers: state.answers || {}
+  };
+
+  try {
+    const res = await fetch(SHEETS_WEBAPP_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    });
+
+    const text = await res.text();
+    let out;
+    try { out = JSON.parse(text); } catch { out = { ok:false, raw:text }; }
+
+    if (out.ok) alert("✅ 제출 완료! 구글시트에 저장되었습니다.");
+    else alert("❌ 제출 실패: " + (out.error || out.raw || "unknown"));
+  } catch (e) {
+    alert("❌ 제출 중 오류: " + String(e));
+  }
+}
 function renderFinal(){
   setStatus("Report");
   const sc = score();
@@ -492,12 +529,11 @@ function renderFinal(){
       el("span",{class:"tag"},`EXPLORER ${sc.by.EXPLORER}/40`),
       el("span",{class:"tag"},`MASTER ${sc.by.MASTER}/40`)
     ),
-    el("div",{class:"hr"}),
     el("div",{class:"row"},
+      el("button",{class:"btn primary", onclick:()=>submitResultToSheet()},"☁️ 결과 제출"),
       el("button",{class:"btn", onclick:()=>{state.phase="MAP"; render();}},"🗺️ 맵"),
-      el("button",{class:"btn bad", onclick:()=>{state.phase="START"; state.section="ROOKIE"; state.index=0; state.answers={}; state.unlocked={ROOKIE:true,EXPLORER:false,MASTER:false}; render();}},"🧹 초기화")
-    )
-  );
+      el("button",{class:"btn bad", onclick:()=>{state.phase="START"; state.section="ROOKIE"; state.index=0; state.answers={}; state.unlocked={ROOKIE:true,EXPLORER:false,MASTER:false}; render();}},"처음부터")
+),
 
   const side = el("div",{class:"card pad side"},
     el("div",{class:"big"},"다음 단계"),
@@ -521,6 +557,9 @@ function render(){
 }
 
 render();
+  function submitResultToSheet(){
+  alert("제출 테스트");
+}
 </script>
 </body>
 </html>
