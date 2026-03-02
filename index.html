@@ -44,6 +44,13 @@
     .grid4{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
     @media (min-width:760px){.grid4{grid-template-columns:repeat(4,1fr);}}
     .choice{text-align:left;}
+
+    /* ✅ 선택한 보기 진하게 표시(요청 반영) */
+    .choice.selected{
+      background:linear-gradient(135deg,#7aa2f7,#bb9af7);
+      border:none;
+    }
+
     .tagrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
     .tag{font-size:11px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--muted);}
     .map{display:grid;grid-template-columns:1fr;gap:12px;}
@@ -79,7 +86,6 @@
 <script>
 /* ===============================
    0) 데이터: 120 단어(영-한)
-   - 수업용 기본어휘 중심, 중1 수준
    =============================== */
 const WORDS = [
   ["rain","비"],["snow","눈"],["wind","바람"],["cloud","구름"],["sun","태양"],["sky","하늘"],["water","물"],["river","강"],["sea","바다"],["mountain","산"],
@@ -94,7 +100,7 @@ const WORDS = [
   ["happy","행복한"],["sad","슬픈"],["angry","화난"],["tired","피곤한"],["hungry","배고픈"],["thirsty","목마른"],["busy","바쁜"],["free","한가한/자유로운"],["easy","쉬운"],["difficult","어려운"],
   ["fast","빠른"],["slow","느린"],["early","이른"],["late","늦은"],["beautiful","아름다운"],["kind","친절한"],["smart","똑똑한"],["strong","강한"],["weak","약한"],["clean","깨끗한"],
   ["home","집"],["room","방"],["door","문"],["window","창문"],["street","거리"],["city","도시"],["country","나라"],["store","가게"],["market","시장"],["hospital","병원"]
-]; // 총 120쌍
+]; // 120쌍
 
 /* ===============================
    1) 유틸
@@ -113,14 +119,9 @@ function clamp(n,a,b){ return Math.max(a, Math.min(b,n)); }
 function norm(s){ return String(s||"").trim().toLowerCase().replace(/\s+/g," "); }
 
 /* ===============================
-   2) 120문항 생성 로직
-   - Rookie(1~40): 뜻 고르기(4지선다)
-   - Explorer(41~80): 문맥 의미 추론(4지선다)
-   - Master(81~120): 단답형(영단어 1개)
+   2) 120문항 생성
    =============================== */
 function makeChoices(correctIndex, pool, getText){
-  // correctIndex: pool의 인덱스
-  const correct = pool[correctIndex];
   const others = [];
   while(others.length<3){
     const r = Math.floor(Math.random()*pool.length);
@@ -134,8 +135,7 @@ function makeChoices(correctIndex, pool, getText){
   return {choices, answer};
 }
 
-function explorerSentence(word, meaning){
-  // 아주 단순/안전한 문장 템플릿(중1)
+function explorerSentence(word){
   const templates = [
     `I ${word} after school.`,
     `We ${word} every day.`,
@@ -153,7 +153,6 @@ function explorerSentence(word, meaning){
 function buildQuestionBank(){
   const bank = [];
 
-  // Rookie 40: 뜻 고르기 (영 -> 한)
   for(let i=0;i<40;i++){
     const [w, m] = WORDS[i];
     const {choices, answer} = makeChoices(i, WORDS, (x)=>x[1]);
@@ -167,7 +166,6 @@ function buildQuestionBank(){
     });
   }
 
-  // Explorer 40: 문맥 의미 추론 (영 -> 한)
   for(let i=40;i<80;i++){
     const [w, m] = WORDS[i];
     const {choices, answer} = makeChoices(i, WORDS, (x)=>x[1]);
@@ -175,13 +173,12 @@ function buildQuestionBank(){
       id: `E${String(i-39).padStart(3,"0")}`,
       section: "EXPLORER",
       type: "mcq",
-      prompt: explorerSentence(w, m),
+      prompt: explorerSentence(w),
       choices, answer,
       meta: {word:w, meaning:m}
     });
   }
 
-  // Master 40: 단답형 (한 -> 영)
   for(let i=80;i<120;i++){
     const [w, m] = WORDS[i];
     bank.push({
@@ -294,7 +291,7 @@ function renderStart(){
       el("span",{class:"tag"},`MASTER ${sc.by.MASTER}/40`)
     ),
     el("div",{class:"hr"}),
-    el("button",{class:"btn bad", onclick:()=>{ // 초기화
+    el("button",{class:"btn bad", onclick:()=>{
       state.phase="START"; state.section="ROOKIE"; state.index=0;
       state.answers={}; state.unlocked={ROOKIE:true,EXPLORER:false,MASTER:false};
       render();
@@ -372,10 +369,15 @@ function renderPlay(){
       el("div",{}, el("div",{class:"muted small"},`총점 ${sc.total}/120`))
     ),
     el("div",{class:"qtext"}, q.prompt),
+
+    /* ✅ 정답 노출 방지(요청 반영)
+       - ROOKIE/EXPLORER(MCQ)에서는 Word 태그 표시
+       - MASTER(단답형)에서는 Word 태그 숨김 */
     el("div",{class:"tagrow"},
       el("span",{class:"tag"},`ID: ${q.id}`),
-      el("span",{class:"tag"},`Word: ${q.meta.word}`)
+      (q.type==="mcq" ? el("span",{class:"tag"},`Word: ${q.meta.word}`) : null)
     ),
+
     el("div",{class:"hr"})
   );
 
@@ -383,12 +385,15 @@ function renderPlay(){
     const prev = state.answers[q.id]?.choiceIndex;
     const btns = q.choices.map((t,i)=>{
       const label = String.fromCharCode(65+i)+") "+t;
-      const b = el("button",{class:"btn choice"+(prev===i?" selected":""), onclick:()=>{
-        state.answers[q.id]={choiceIndex:i};
-        render();
-      }}, label);
-      return b;
+      return el("button",{
+        class:"btn choice"+(prev===i?" selected":""),
+        onclick:()=>{
+          state.answers[q.id]={choiceIndex:i};
+          render();
+        }
+      }, label);
     });
+
     main.appendChild(el("div",{class:"grid4"}, ...btns));
     main.appendChild(el("div",{class:"hr"}));
     main.appendChild(el("div",{class:"row"},
@@ -397,7 +402,14 @@ function renderPlay(){
     ));
   } else {
     const prevText = state.answers[q.id]?.text ?? "";
-    main.appendChild(el("input",{value:prevText, placeholder:"영어 단어 1개 입력", oninput:(e)=>{state.answers[q.id]={text:e.target.value};}}));
+    main.appendChild(el("input",{
+      value:prevText,
+      placeholder:"영어 단어 1개 입력",
+      autocomplete:"off",
+      autocapitalize:"none",
+      spellcheck:"false",
+      oninput:(e)=>{state.answers[q.id]={text:e.target.value};}
+    }));
     main.appendChild(el("div",{class:"hr"}));
     main.appendChild(el("div",{class:"row"},
       el("button",{class:"btn primary", onclick:()=>nextQuestion()},"다음 ▶"),
@@ -432,7 +444,6 @@ function renderSectionResult(){
   const secScore = sc.by[state.section];
   const passed = secScore >= 28;
 
-  // unlock
   if(state.section==="ROOKIE" && passed) state.unlocked.EXPLORER=true;
   if(state.section==="EXPLORER" && passed) state.unlocked.MASTER=true;
 
@@ -492,7 +503,7 @@ function renderFinal(){
     el("div",{class:"big"},"다음 단계"),
     el("div",{class:"muted small"},"여기까지가 ‘안정형 120문항’입니다.\n원하시면 다음으로 구글시트 자동 수집(반 전체 자동 저장) 기능을 ‘깨끗하게’ 붙여드립니다."),
     el("div",{class:"hr"}),
-    el("button",{class:"btn primary", onclick:()=>{alert("다음 단계: 구글시트 자동 수집 버전으로 업그레이드 진행! (원하시면 바로 이어서 안내할게요)");}},"☁️ 자동 수집 붙이기(다음)")
+    el("button",{class:"btn primary", onclick:()=>{alert("다음 단계: 구글시트 자동 수집 버전으로 업그레이드 진행!");}},"☁️ 자동 수집 붙이기(다음)")
   );
 
   return el("div",{class:"row"}, main, side);
