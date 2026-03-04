@@ -63,8 +63,13 @@
     .footer { margin-top: 22px; color: var(--muted); font-size: 12px; line-height: 1.55; }
     .toast { position: fixed; right: 14px; bottom: 14px; background: rgba(18,26,51,.92); border:1px solid var(--line);
              color: var(--text); padding: 12px 14px; border-radius: 14px; box-shadow: var(--shadow); display:none; max-width: 360px; }
+
+    /* image block */
+    .imgWrap { margin: 12px 0; display:flex; justify-content:center; }
+    .qimg { max-width:100%; width:360px; height:auto; border-radius:14px; border:1px solid var(--line); background: rgba(0,0,0,.18); }
   </style>
 </head>
+
 <body>
   <div class="wrap">
     <header>
@@ -84,14 +89,175 @@
       <div>💾 자동 저장: 진행/결과는 이 브라우저의 <span class="kbd">localStorage</span>에 자동 저장됩니다.</div>
       <div>📤 내보내기: 교사용으로 <span class="kbd">JSON</span> / <span class="kbd">CSV</span> 파일을 다운로드할 수 있습니다.</div>
       <div>🔁 가져오기: 이전에 내보낸 JSON을 다시 불러와 리포트를 복원할 수 있습니다.</div>
+      <div class="small">🖼️ 이미지 사용: 저장소에 <span class="kbd">assets/img</span> 폴더를 만들고 PNG를 업로드하세요. (예: <span class="kbd">assets/img/rain.png</span>)</div>
     </div>
   </div>
 
   <div class="toast" id="toast"></div>
 
 <script>
-  // ====== Question Bank (120) ======
-  const QUESTION_BANK = [{"id": "R001", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: baby", "choices": ["아기", "방문하다", "우산", "먹다"], "answer": 0, "tags": ["meaning", "basic"]}, {"id": "R002", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: cake", "choices": ["신사", "전화하다/부르다", "빠른", "케이크"], "answer": 3, "tags": ["meaning", "basic"]}, {"id": "R003", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: dance", "choices": ["직업", "생각하다", "실패하다", "춤추다"], "answer": 3, "tags": ["meaning", "basic"]}, {"id": "R004", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: ear", "choices": ["얼굴", "슬픈", "생각/아이디어", "귀"], "answer": 3, "tags": ["meaning", "basic"]}, {"id": "R005", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: face", "choices": ["화난", "얼굴", "보다", "년"], "answer": 1, "tags": ["meaning", "basic"]}, {"id": "R006", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: game", "choices": ["게임", "생각/아이디어", "깨다", "너/당신"], "answer": 0, "tags": ["meaning", "basic"]}, {"id": "R007", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: habit", "choices": ["생각/아이디어", "지구", "딸", "습관"], "answer": 3, "tags": ["meaning", "basic"]}, {"id": "R008", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: jacket", "choices": ["비디오", "오다", "얼굴", "재킷"], "answer": 3, "tags": ["meaning", "basic"]}, {"id": "R009", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: keep", "choices": ["여왕", "가스", "보관하다", "생각/아이디어"], "answer": 2, "tags": ["meaning", "basic"]}, {"id": "R010", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: lady", "choices": ["오다", "동쪽", "여성/숙녀", "정원"], "answer": 2, "tags": ["meaning", "basic"]}, {"id": "R011", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: mad", "choices": ["경주/인종", "년", "화난", "원하다"], "answer": 2, "tags": ["meaning", "basic"]}, {"id": "R012", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: name", "choices": ["나쁜", "직업", "방문하다", "이름"], "answer": 3, "tags": ["meaning", "basic"]}, {"id": "R013", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: page", "choices": ["키 큰", "네", "보다", "페이지"], "answer": 3, "tags": ["meaning", "basic"]}, {"id": "R014", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: queen", "choices": ["오다", "딸", "정원", "여왕"], "answer": 3, "tags": ["meaning", "basic"]}, {"id": "R015", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: rabbit", "choices": ["토끼", "퀴즈", "주스", "찾다"], "answer": 0, "tags": ["meaning", "basic"]}, {"id": "R016", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: sad", "choices": ["슬픈", "조용한", "깨다", "재킷"], "answer": 0, "tags": ["meaning", "basic"]}, {"id": "R017", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: table", "choices": ["만들다", "지구", "탁자/테이블", "실패하다"], "answer": 2, "tags": ["meaning", "basic"]}, {"id": "R018", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: ugly", "choices": ["실패하다", "이미지/그림", "원하다", "못생긴"], "answer": 3, "tags": ["meaning", "basic"]}, {"id": "R019", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: vegetable", "choices": ["방문하다", "너/당신", "가방", "채소"], "answer": 3, "tags": ["meaning", "basic"]}, {"id": "R020", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: wait", "choices": ["동물원", "기다리다", "아기", "햄버거"], "answer": 1, "tags": ["meaning", "basic"]}, {"id": "R021", "section": "ROOKIE", "type": "mcq", "prompt": "🖼️ 비가 오는 하늘\n\n그림(상황)과 어울리는 단어는?", "choices": ["early", "baby", "jam", "rain"], "answer": 3, "tags": ["scene", "basic"]}, {"id": "R022", "section": "ROOKIE", "type": "mcq", "prompt": "🖼️ 아이가 음식을 먹는 모습\n\n그림(상황)과 어울리는 단어는?", "choices": ["rabbit", "find", "eat", "see"], "answer": 2, "tags": ["scene", "basic"]}, {"id": "R023", "section": "ROOKIE", "type": "mcq", "prompt": "🖼️ 사람이 길을 걷는 모습\n\n그림(상황)과 어울리는 단어는?", "choices": ["juice", "you", "ice", "walk"], "answer": 3, "tags": ["scene", "basic"]}, {"id": "R024", "section": "ROOKIE", "type": "mcq", "prompt": "🖼️ 책을 읽는 모습\n\n그림(상황)과 어울리는 단어는?", "choices": ["rain", "ear", "read", "about"], "answer": 2, "tags": ["scene", "basic"]}, {"id": "R025", "section": "ROOKIE", "type": "mcq", "prompt": "🖼️ 춤추는 모습\n\n그림(상황)과 어울리는 단어는?", "choices": ["habit", "violin", "dance", "give"], "answer": 2, "tags": ["scene", "basic"]}, {"id": "R026", "section": "ROOKIE", "type": "mcq", "prompt": "🖼️ 우산\n\n그림(상황)과 어울리는 단어는?", "choices": ["want", "umbrella", "rain", "walk"], "answer": 1, "tags": ["scene", "basic"]}, {"id": "R027", "section": "ROOKIE", "type": "mcq", "prompt": "🖼️ 토끼\n\n그림(상황)과 어울리는 단어는?", "choices": ["rabbit", "across", "if", "juice"], "answer": 0, "tags": ["scene", "basic"]}, {"id": "R028", "section": "ROOKIE", "type": "mcq", "prompt": "🖼️ 카메라\n\n그림(상황)과 어울리는 단어는?", "choices": ["camera", "see", "violin", "keep"], "answer": 0, "tags": ["scene", "basic"]}, {"id": "R029", "section": "ROOKIE", "type": "mcq", "prompt": "🖼️ 바이올린\n\n그림(상황)과 어울리는 단어는?", "choices": ["violin", "garden", "eat", "bag"], "answer": 0, "tags": ["scene", "basic"]}, {"id": "R030", "section": "ROOKIE", "type": "mcq", "prompt": "🖼️ 햄버거\n\n그림(상황)과 어울리는 단어는?", "choices": ["video", "queen", "hamburger", "get"], "answer": 2, "tags": ["scene", "basic"]}, {"id": "R031", "section": "ROOKIE", "type": "mcq", "prompt": "빈칸에 알맞은 단어를 고르세요:\nI ___ a cake.", "choices": ["go", "east", "eat", "rain"], "answer": 2, "tags": ["blank", "basic"]}, {"id": "R032", "section": "ROOKIE", "type": "mcq", "prompt": "빈칸에 알맞은 단어를 고르세요:\nI ___ to school.", "choices": ["baby", "make", "come", "walk"], "answer": 3, "tags": ["blank", "basic"]}, {"id": "R033", "section": "ROOKIE", "type": "mcq", "prompt": "빈칸에 알맞은 단어를 고르세요:\nThe baby is ___.", "choices": ["sad", "date", "get", "job"], "answer": 0, "tags": ["blank", "basic"]}, {"id": "R034", "section": "ROOKIE", "type": "mcq", "prompt": "빈칸에 알맞은 단어를 고르세요:\nIt is very ___.", "choices": ["yellow", "take", "job", "dark"], "answer": 3, "tags": ["blank", "basic"]}, {"id": "R035", "section": "ROOKIE", "type": "mcq", "prompt": "빈칸에 알맞은 단어를 고르세요:\nIt will ___ today.", "choices": ["daughter", "quick", "rain", "queen"], "answer": 2, "tags": ["blank", "basic"]}, {"id": "R036", "section": "ROOKIE", "type": "mcq", "prompt": "빈칸에 알맞은 단어를 고르세요:\nI ___ a book.", "choices": ["sad", "look", "dark", "read"], "answer": 3, "tags": ["blank", "basic"]}, {"id": "R037", "section": "ROOKIE", "type": "mcq", "prompt": "빈칸에 알맞은 단어를 고르세요:\nI ___ some juice.", "choices": ["quick", "want", "get", "queen"], "answer": 1, "tags": ["blank", "basic"]}, {"id": "R038", "section": "ROOKIE", "type": "mcq", "prompt": "빈칸에 알맞은 단어를 고르세요:\nWe ___ a cake.", "choices": ["rain", "if", "radio", "make"], "answer": 3, "tags": ["blank", "basic"]}, {"id": "R039", "section": "ROOKIE", "type": "mcq", "prompt": "빈칸에 알맞은 단어를 고르세요:\nWe ___ to the zoo.", "choices": ["question", "go", "early", "hamburger"], "answer": 1, "tags": ["blank", "basic"]}, {"id": "R040", "section": "ROOKIE", "type": "mcq", "prompt": "빈칸에 알맞은 단어를 고르세요:\nPlease ___ your jacket.", "choices": ["very", "yellow", "take", "queen"], "answer": 2, "tags": ["blank", "basic"]}, {"id": "E041", "section": "EXPLORER", "type": "mcq", "prompt": "I wake every day.\n\n'wake'의 의미로 가장 알맞은 것은?", "choices": ["걸다", "세일/판매", "조용한", "깨다"], "answer": 3, "tags": ["context", "meaning"]}, {"id": "E042", "section": "EXPLORER", "type": "mcq", "prompt": "I walk every day.\n\n'walk'의 의미로 가장 알맞은 것은?", "choices": ["~에 대하여", "걷다", "샐러드", "주스"], "answer": 1, "tags": ["context", "meaning"]}, {"id": "E043", "section": "EXPLORER", "type": "mcq", "prompt": "This is a wall.\n\n'wall'의 의미로 가장 알맞은 것은?", "choices": ["행동하다", "만들다", "벽", "게임"], "answer": 2, "tags": ["context", "meaning"]}, {"id": "E044", "section": "EXPLORER", "type": "mcq", "prompt": "This is a want.\n\n'want'의 의미로 가장 알맞은 것은?", "choices": ["탁자/테이블", "원하다", "만들다", "가져가다/타다/걸리다"], "answer": 1, "tags": ["context", "meaning"]}, {"id": "E045", "section": "EXPLORER", "type": "mcq", "prompt": "This is a year.\n\n'year'의 의미로 가장 알맞은 것은?", "choices": ["찾다", "탁자/테이블", "년", "방문하다"], "answer": 2, "tags": ["context", "meaning"]}, {"id": "E046", "section": "EXPLORER", "type": "mcq", "prompt": "This is a zoo.\n\n'zoo'의 의미로 가장 알맞은 것은?", "choices": ["~건너서", "얻다/받다", "동물원", "위험"], "answer": 2, "tags": ["context", "meaning"]}, {"id": "E047", "section": "EXPLORER", "type": "mcq", "prompt": "This is a about.\n\n'about'의 의미로 가장 알맞은 것은?", "choices": ["채소", "매우", "찾다", "~에 대하여"], "answer": 3, "tags": ["context", "meaning"]}, {"id": "E048", "section": "EXPLORER", "type": "mcq", "prompt": "This is a back.\n\n'back'의 의미로 가장 알맞은 것은?", "choices": ["가져가다/타다/걸리다", "질문", "전화하다/부르다", "뒤/등"], "answer": 3, "tags": ["context", "meaning"]}, {"id": "E049", "section": "EXPLORER", "type": "mcq", "prompt": "This is a bad.\n\n'bad'의 의미로 가장 알맞은 것은?", "choices": ["비디오", "나쁜", "여왕", "이미지/그림"], "answer": 1, "tags": ["context", "meaning"]}, {"id": "E050", "section": "EXPLORER", "type": "mcq", "prompt": "This is a badminton.\n\n'badminton'의 의미로 가장 알맞은 것은?", "choices": ["배드민턴", "화난", "~위에", "정원"], "answer": 0, "tags": ["context", "meaning"]}, {"id": "E051", "section": "EXPLORER", "type": "mcq", "prompt": "This is a bag.\n\n'bag'의 의미로 가장 알맞은 것은?", "choices": ["우산", "가방", "가다", "말하다/알려주다"], "answer": 1, "tags": ["context", "meaning"]}, {"id": "E052", "section": "EXPLORER", "type": "mcq", "prompt": "This is a call.\n\n'call'의 의미로 가장 알맞은 것은?", "choices": ["빠른", "방문하다", "카메라", "전화하다/부르다"], "answer": 3, "tags": ["context", "meaning"]}, {"id": "E053", "section": "EXPLORER", "type": "mcq", "prompt": "I like camera.\n\n'camera'의 의미로 가장 알맞은 것은?", "choices": ["우산", "비디오", "카메라", "신사"], "answer": 2, "tags": ["context", "meaning"]}, {"id": "E054", "section": "EXPLORER", "type": "mcq", "prompt": "This is a camp.\n\n'camp'의 의미로 가장 알맞은 것은?", "choices": ["비", "보다", "캠프", "~건너서"], "answer": 2, "tags": ["context", "meaning"]}, {"id": "E055", "section": "EXPLORER", "type": "mcq", "prompt": "This is a campaign.\n\n'campaign'의 의미로 가장 알맞은 것은?", "choices": ["캠페인", "이미지/그림", "생각/아이디어", "뒤/등"], "answer": 0, "tags": ["context", "meaning"]}, {"id": "E056", "section": "EXPLORER", "type": "mcq", "prompt": "This is a danger.\n\n'danger'의 의미로 가장 알맞은 것은?", "choices": ["보다", "걷다", "직업", "위험"], "answer": 3, "tags": ["context", "meaning"]}, {"id": "E057", "section": "EXPLORER", "type": "mcq", "prompt": "It is very dark. I cannot see.\n\n'dark'의 의미로 가장 알맞은 것은?", "choices": ["딸", "탁자/테이블", "동쪽", "어두운"], "answer": 3, "tags": ["context", "meaning"]}, {"id": "E058", "section": "EXPLORER", "type": "mcq", "prompt": "This is a daughter.\n\n'daughter'의 의미로 가장 알맞은 것은?", "choices": ["이해하다", "걸다", "딸", "채소"], "answer": 2, "tags": ["context", "meaning"]}, {"id": "E059", "section": "EXPLORER", "type": "mcq", "prompt": "This is a date.\n\n'date'의 의미로 가장 알맞은 것은?", "choices": ["년", "걷다", "캠프", "날짜/데이트"], "answer": 3, "tags": ["context", "meaning"]}, {"id": "E060", "section": "EXPLORER", "type": "mcq", "prompt": "This is a early.\n\n'early'의 의미로 가장 알맞은 것은?", "choices": ["년", "이른", "가방", "보관하다"], "answer": 1, "tags": ["context", "meaning"]}, {"id": "E061", "section": "EXPLORER", "type": "mcq", "prompt": "This is a earth.\n\n'earth'의 의미로 가장 알맞은 것은?", "choices": ["오다", "아기", "지구", "걸다"], "answer": 2, "tags": ["context", "meaning"]}, {"id": "E062", "section": "EXPLORER", "type": "mcq", "prompt": "This is a east.\n\n'east'의 의미로 가장 알맞은 것은?", "choices": ["게임", "이미지/그림", "여성/숙녀", "동쪽"], "answer": 3, "tags": ["context", "meaning"]}, {"id": "E063", "section": "EXPLORER", "type": "mcq", "prompt": "I eat every day.\n\n'eat'의 의미로 가장 알맞은 것은?", "choices": ["가스", "먹다", "년", "위험"], "answer": 1, "tags": ["context", "meaning"]}, {"id": "E064", "section": "EXPLORER", "type": "mcq", "prompt": "This is a fact.\n\n'fact'의 의미로 가장 알맞은 것은?", "choices": ["가방", "여성/숙녀", "세일/판매", "사실"], "answer": 3, "tags": ["context", "meaning"]}, {"id": "E065", "section": "EXPLORER", "type": "mcq", "prompt": "This is a garden.\n\n'garden'의 의미로 가장 알맞은 것은?", "choices": ["딸", "퀴즈", "채소", "정원"], "answer": 3, "tags": ["context", "meaning"]}, {"id": "E066", "section": "EXPLORER", "type": "mcq", "prompt": "This is a gas.\n\n'gas'의 의미로 가장 알맞은 것은?", "choices": ["가스", "게임", "방문하다", "나쁜"], "answer": 0, "tags": ["context", "meaning"]}, {"id": "E067", "section": "EXPLORER", "type": "mcq", "prompt": "This is a gentleman.\n\n'gentleman'의 의미로 가장 알맞은 것은?", "choices": ["캠페인", "정원", "신사", "오다"], "answer": 2, "tags": ["context", "meaning"]}, {"id": "E068", "section": "EXPLORER", "type": "mcq", "prompt": "This is a get.\n\n'get'의 의미로 가장 알맞은 것은?", "choices": ["정답/답", "얻다/받다", "~건너서", "너/당신"], "answer": 1, "tags": ["context", "meaning"]}, {"id": "E069", "section": "EXPLORER", "type": "mcq", "prompt": "This is a hair.\n\n'hair'의 의미로 가장 알맞은 것은?", "choices": ["키 큰", "배드민턴", "머리카락", "딸"], "answer": 2, "tags": ["context", "meaning"]}, {"id": "E070", "section": "EXPLORER", "type": "mcq", "prompt": "I like hamburger.\n\n'hamburger'의 의미로 가장 알맞은 것은?", "choices": ["보다", "라디오", "햄버거", "배드민턴"], "answer": 2, "tags": ["context", "meaning"]}, {"id": "E071", "section": "EXPLORER", "type": "mcq", "prompt": "This is a hand.\n\n'hand'의 의미로 가장 알맞은 것은?", "choices": ["정원", "원하다", "말하다/알려주다", "손"], "answer": 3, "tags": ["context", "meaning"]}, {"id": "E072", "section": "EXPLORER", "type": "mcq", "prompt": "This is a hang.\n\n'hang'의 의미로 가장 알맞은 것은?", "choices": ["비", "~위에", "걸다", "가스"], "answer": 2, "tags": ["context", "meaning"]}, {"id": "E073", "section": "EXPLORER", "type": "mcq", "prompt": "This is a ice.\n\n'ice'의 의미로 가장 알맞은 것은?", "choices": ["얼음", "노란", "비", "바이올린"], "answer": 0, "tags": ["context", "meaning"]}, {"id": "E074", "section": "EXPLORER", "type": "mcq", "prompt": "This is a idea.\n\n'idea'의 의미로 가장 알맞은 것은?", "choices": ["라디오", "페이지", "생각하다", "생각/아이디어"], "answer": 3, "tags": ["context", "meaning"]}, {"id": "E075", "section": "EXPLORER", "type": "mcq", "prompt": "This is a if.\n\n'if'의 의미로 가장 알맞은 것은?", "choices": ["라디오", "기다리다", "케이크", "만약"], "answer": 3, "tags": ["context", "meaning"]}, {"id": "E076", "section": "EXPLORER", "type": "mcq", "prompt": "This is a image.\n\n'image'의 의미로 가장 알맞은 것은?", "choices": ["너/당신", "소금", "이미지/그림", "귀"], "answer": 2, "tags": ["context", "meaning"]}, {"id": "E077", "section": "EXPLORER", "type": "mcq", "prompt": "I like juice.\n\n'juice'의 의미로 가장 알맞은 것은?", "choices": ["주스", "정원", "보다", "뒤/등"], "answer": 0, "tags": ["context", "meaning"]}, {"id": "E078", "section": "EXPLORER", "type": "mcq", "prompt": "Please join our club.\n\n'join'의 의미로 가장 알맞은 것은?", "choices": ["사실", "가스", "참여하다", "머리카락"], "answer": 2, "tags": ["context", "meaning"]}, {"id": "E079", "section": "EXPLORER", "type": "mcq", "prompt": "This is a job.\n\n'job'의 의미로 가장 알맞은 것은?", "choices": ["주다", "말하다/알려주다", "오다", "직업"], "answer": 3, "tags": ["context", "meaning"]}, {"id": "E080", "section": "EXPLORER", "type": "mcq", "prompt": "This is a jam.\n\n'jam'의 의미로 가장 알맞은 것은?", "choices": ["배드민턴", "잼", "말하다/알려주다", "이해하다"], "answer": 1, "tags": ["context", "meaning"]}, {"id": "M081", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nShe _____ to school every day.", "answers": ["walk"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M082", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nI _____ the question.", "answers": ["understand"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M083", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nHe is very _____.", "answers": ["quiet"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M084", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nIt is raining. Bring your _____.", "answers": ["umbrella"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M085", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nShe plays the _____.", "answers": ["violin"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M086", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nHe has a bad _____.", "answers": ["habit"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M087", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nPlease _____ my bag.", "answers": ["find"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M088", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\n_____ me your name.", "answers": ["tell"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M089", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nI _____ my money in my bag.", "answers": ["keep"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M090", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nWe _____ our teacher.", "answers": ["visit"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M091", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nI _____ a book after dinner.", "answers": ["read"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M092", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nThey _____ salad.", "answers": ["eat"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M093", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nWe _____ at the party.", "answers": ["dance"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M094", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nPlease _____ here.", "answers": ["wait"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M095", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nI _____ up early.", "answers": ["wake"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M096", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nIt is _____. I cannot see.", "answers": ["dark"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M097", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nThis road is _____.", "answers": ["safe"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M098", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nHe runs very _____.", "answers": ["quick"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M099", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nThe clock is _____ the door.", "answers": ["above"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M100", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nThe cat is _____ the table.", "answers": ["under"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M101", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nGo _____ the street.", "answers": ["across"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M102", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nI _____ some juice.", "answers": ["want"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M103", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nWe _____ a cake.", "answers": ["make"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M104", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nI _____ to the zoo.", "answers": ["go"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M105", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nPlease _____ here.", "answers": ["come"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M106", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\n_____ at this image.", "answers": ["look"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M107", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nI _____ it is a good idea.", "answers": ["think"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M108", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\n_____ me the page.", "answers": ["give"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M109", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\n_____ your jacket.", "answers": ["take"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M110", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nPlease _____ our game.", "answers": ["join"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M111", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nThe baby is _____.", "answers": ["sad"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M112", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nHe is _____.", "answers": ["tall"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M113", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nThe banana is _____.", "answers": ["yellow"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M114", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nI went there _____.", "answers": ["yesterday"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M115", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nI have a _____.", "answers": ["question"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M116", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nWrite the _____.", "answers": ["answer"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M117", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nWhat is your _____?", "answers": ["name"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M118", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nMy _____ is big.", "answers": ["family"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M119", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nWe have a _____.", "answers": ["garden"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M120", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nWe go to the _____.", "answers": ["zoo"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}];
+  // ==============================
+  //  Question Bank (120)
+  //  ✅ 이미지 문항: q.image가 있으면 화면에 그림 표시됨
+  //  ✅ MASTER: 애매 문항은 정답 1개로 고정되게 문장 수정
+  // ==============================
+  const QUESTION_BANK = [
+    // ----- ROOKIE 1~20: meaning -----
+    {"id":"R001","section":"ROOKIE","type":"mcq","prompt":"단어의 뜻을 고르세요: baby","choices":["아기","방문하다","우산","먹다"],"answer":0,"tags":["meaning","basic"]},
+    {"id":"R002","section":"ROOKIE","type":"mcq","prompt":"단어의 뜻을 고르세요: cake","choices":["신사","전화하다/부르다","빠른","케이크"],"answer":3,"tags":["meaning","basic"]},
+    {"id":"R003","section":"ROOKIE","type":"mcq","prompt":"단어의 뜻을 고르세요: dance","choices":["직업","생각하다","실패하다","춤추다"],"answer":3,"tags":["meaning","basic"]},
+    {"id":"R004","section":"ROOKIE","type":"mcq","prompt":"단어의 뜻을 고르세요: ear","choices":["얼굴","슬픈","생각/아이디어","귀"],"answer":3,"tags":["meaning","basic"]},
+    {"id":"R005","section":"ROOKIE","type":"mcq","prompt":"단어의 뜻을 고르세요: face","choices":["화난","얼굴","보다","년"],"answer":1,"tags":["meaning","basic"]},
+    {"id":"R006","section":"ROOKIE","type":"mcq","prompt":"단어의 뜻을 고르세요: game","choices":["게임","생각/아이디어","깨다","너/당신"],"answer":0,"tags":["meaning","basic"]},
+    {"id":"R007","section":"ROOKIE","type":"mcq","prompt":"단어의 뜻을 고르세요: habit","choices":["생각/아이디어","지구","딸","습관"],"answer":3,"tags":["meaning","basic"]},
+    {"id":"R008","section":"ROOKIE","type":"mcq","prompt":"단어의 뜻을 고르세요: jacket","choices":["비디오","오다","얼굴","재킷"],"answer":3,"tags":["meaning","basic"]},
+    {"id":"R009","section":"ROOKIE","type":"mcq","prompt":"단어의 뜻을 고르세요: keep","choices":["여왕","가스","보관하다","생각/아이디어"],"answer":2,"tags":["meaning","basic"]},
+    {"id":"R010","section":"ROOKIE","type":"mcq","prompt":"단어의 뜻을 고르세요: lady","choices":["오다","동쪽","여성/숙녀","정원"],"answer":2,"tags":["meaning","basic"]},
+    {"id":"R011","section":"ROOKIE","type":"mcq","prompt":"단어의 뜻을 고르세요: mad","choices":["경주/인종","년","화난","원하다"],"answer":2,"tags":["meaning","basic"]},
+    {"id":"R012","section":"ROOKIE","type":"mcq","prompt":"단어의 뜻을 고르세요: name","choices":["나쁜","직업","방문하다","이름"],"answer":3,"tags":["meaning","basic"]},
+    {"id":"R013","section":"ROOKIE","type":"mcq","prompt":"단어의 뜻을 고르세요: page","choices":["키 큰","네","보다","페이지"],"answer":3,"tags":["meaning","basic"]},
+    {"id":"R014","section":"ROOKIE","type":"mcq","prompt":"단어의 뜻을 고르세요: queen","choices":["오다","딸","정원","여왕"],"answer":3,"tags":["meaning","basic"]},
+    {"id":"R015","section":"ROOKIE","type":"mcq","prompt":"단어의 뜻을 고르세요: rabbit","choices":["토끼","퀴즈","주스","찾다"],"answer":0,"tags":["meaning","basic"]},
+    {"id":"R016","section":"ROOKIE","type":"mcq","prompt":"단어의 뜻을 고르세요: sad","choices":["슬픈","조용한","깨다","재킷"],"answer":0,"tags":["meaning","basic"]},
+    {"id":"R017","section":"ROOKIE","type":"mcq","prompt":"단어의 뜻을 고르세요: table","choices":["만들다","지구","탁자/테이블","실패하다"],"answer":2,"tags":["meaning","basic"]},
+    {"id":"R018","section":"ROOKIE","type":"mcq","prompt":"단어의 뜻을 고르세요: ugly","choices":["실패하다","이미지/그림","원하다","못생긴"],"answer":3,"tags":["meaning","basic"]},
+    {"id":"R019","section":"ROOKIE","type":"mcq","prompt":"단어의 뜻을 고르세요: vegetable","choices":["방문하다","너/당신","가방","채소"],"answer":3,"tags":["meaning","basic"]},
+    {"id":"R020","section":"ROOKIE","type":"mcq","prompt":"단어의 뜻을 고르세요: wait","choices":["동물원","기다리다","아기","햄버거"],"answer":1,"tags":["meaning","basic"]},
+
+    // ----- ROOKIE 21~30: scene (✅ 이미지 연결) -----
+    {"id":"R021","section":"ROOKIE","type":"mcq","prompt":"그림(상황)과 어울리는 단어는?","image":"assets/img/rain.png","choices":["early","baby","jam","rain"],"answer":3,"tags":["scene","basic"]},
+    {"id":"R022","section":"ROOKIE","type":"mcq","prompt":"그림(상황)과 어울리는 단어는?","image":"assets/img/eat.png","choices":["rabbit","find","eat","see"],"answer":2,"tags":["scene","basic"]},
+    {"id":"R023","section":"ROOKIE","type":"mcq","prompt":"그림(상황)과 어울리는 단어는?","image":"assets/img/walk.png","choices":["juice","you","ice","walk"],"answer":3,"tags":["scene","basic"]},
+    {"id":"R024","section":"ROOKIE","type":"mcq","prompt":"그림(상황)과 어울리는 단어는?","image":"assets/img/read.png","choices":["rain","ear","read","about"],"answer":2,"tags":["scene","basic"]},
+    {"id":"R025","section":"ROOKIE","type":"mcq","prompt":"그림(상황)과 어울리는 단어는?","image":"assets/img/dance.png","choices":["habit","violin","dance","give"],"answer":2,"tags":["scene","basic"]},
+    {"id":"R026","section":"ROOKIE","type":"mcq","prompt":"그림(상황)과 어울리는 단어는?","image":"assets/img/umbrella.png","choices":["want","umbrella","rain","walk"],"answer":1,"tags":["scene","basic"]},
+    {"id":"R027","section":"ROOKIE","type":"mcq","prompt":"그림(상황)과 어울리는 단어는?","image":"assets/img/rabbit.png","choices":["rabbit","across","if","juice"],"answer":0,"tags":["scene","basic"]},
+    {"id":"R028","section":"ROOKIE","type":"mcq","prompt":"그림(상황)과 어울리는 단어는?","image":"assets/img/camera.png","choices":["camera","see","violin","keep"],"answer":0,"tags":["scene","basic"]},
+    {"id":"R029","section":"ROOKIE","type":"mcq","prompt":"그림(상황)과 어울리는 단어는?","image":"assets/img/violin.png","choices":["violin","garden","eat","bag"],"answer":0,"tags":["scene","basic"]},
+    {"id":"R030","section":"ROOKIE","type":"mcq","prompt":"그림(상황)과 어울리는 단어는?","image":"assets/img/hamburger.png","choices":["video","queen","hamburger","get"],"answer":2,"tags":["scene","basic"]},
+
+    // ----- ROOKIE 31~40: blanks -----
+    {"id":"R031","section":"ROOKIE","type":"mcq","prompt":"빈칸에 알맞은 단어를 고르세요:\nI ___ a cake.","choices":["go","east","eat","rain"],"answer":2,"tags":["blank","basic"]},
+    {"id":"R032","section":"ROOKIE","type":"mcq","prompt":"빈칸에 알맞은 단어를 고르세요:\nI ___ to school.","choices":["baby","make","come","walk"],"answer":3,"tags":["blank","basic"]},
+    {"id":"R033","section":"ROOKIE","type":"mcq","prompt":"빈칸에 알맞은 단어를 고르세요:\nThe baby is ___.","choices":["sad","date","get","job"],"answer":0,"tags":["blank","basic"]},
+    {"id":"R034","section":"ROOKIE","type":"mcq","prompt":"빈칸에 알맞은 단어를 고르세요:\nIt is very ___.","choices":["yellow","take","job","dark"],"answer":3,"tags":["blank","basic"]},
+    {"id":"R035","section":"ROOKIE","type":"mcq","prompt":"빈칸에 알맞은 단어를 고르세요:\nIt will ___ today.","choices":["daughter","quick","rain","queen"],"answer":2,"tags":["blank","basic"]},
+    {"id":"R036","section":"ROOKIE","type":"mcq","prompt":"빈칸에 알맞은 단어를 고르세요:\nI ___ a book.","choices":["sad","look","dark","read"],"answer":3,"tags":["blank","basic"]},
+    {"id":"R037","section":"ROOKIE","type":"mcq","prompt":"빈칸에 알맞은 단어를 고르세요:\nI ___ some juice.","choices":["quick","want","get","queen"],"answer":1,"tags":["blank","basic"]},
+    {"id":"R038","section":"ROOKIE","type":"mcq","prompt":"빈칸에 알맞은 단어를 고르세요:\nWe ___ a cake.","choices":["rain","if","radio","make"],"answer":3,"tags":["blank","basic"]},
+    {"id":"R039","section":"ROOKIE","type":"mcq","prompt":"빈칸에 알맞은 단어를 고르세요:\nWe ___ to the zoo.","choices":["question","go","early","hamburger"],"answer":1,"tags":["blank","basic"]},
+    {"id":"R040","section":"ROOKIE","type":"mcq","prompt":"빈칸에 알맞은 단어를 고르세요:\nPlease ___ your jacket.","choices":["very","yellow","take","queen"],"answer":2,"tags":["blank","basic"]},
+
+    // ----- EXPLORER 41~80 (원본 유지: 문맥 의미 추론) -----
+    {"id":"E041","section":"EXPLORER","type":"mcq","prompt":"I wake every day.\n\n'wake'의 의미로 가장 알맞은 것은?","choices":["걸다","세일/판매","조용한","깨다"],"answer":3,"tags":["context","meaning"]},
+    {"id":"E042","section":"EXPLORER","type":"mcq","prompt":"I walk every day.\n\n'walk'의 의미로 가장 알맞은 것은?","choices":["~에 대하여","걷다","샐러드","주스"],"answer":1,"tags":["context","meaning"]},
+    {"id":"E043","section":"EXPLORER","type":"mcq","prompt":"This is a wall.\n\n'wall'의 의미로 가장 알맞은 것은?","choices":["행동하다","만들다","벽","게임"],"answer":2,"tags":["context","meaning"]},
+    {"id":"E044","section":"EXPLORER","type":"mcq","prompt":"This is a want.\n\n'want'의 의미로 가장 알맞은 것은?","choices":["탁자/테이블","원하다","만들다","가져가다/타다/걸리다"],"answer":1,"tags":["context","meaning"]},
+    {"id":"E045","section":"EXPLORER","type":"mcq","prompt":"This is a year.\n\n'year'의 의미로 가장 알맞은 것은?","choices":["찾다","탁자/테이블","년","방문하다"],"answer":2,"tags":["context","meaning"]},
+    {"id":"E046","section":"EXPLORER","type":"mcq","prompt":"This is a zoo.\n\n'zoo'의 의미로 가장 알맞은 것은?","choices":["~건너서","얻다/받다","동물원","위험"],"answer":2,"tags":["context","meaning"]},
+    {"id":"E047","section":"EXPLORER","type":"mcq","prompt":"This is a about.\n\n'about'의 의미로 가장 알맞은 것은?","choices":["채소","매우","찾다","~에 대하여"],"answer":3,"tags":["context","meaning"]},
+    {"id":"E048","section":"EXPLORER","type":"mcq","prompt":"This is a back.\n\n'back'의 의미로 가장 알맞은 것은?","choices":["가져가다/타다/걸리다","질문","전화하다/부르다","뒤/등"],"answer":3,"tags":["context","meaning"]},
+    {"id":"E049","section":"EXPLORER","type":"mcq","prompt":"This is a bad.\n\n'bad'의 의미로 가장 알맞은 것은?","choices":["비디오","나쁜","여왕","이미지/그림"],"answer":1,"tags":["context","meaning"]},
+    {"id":"E050","section":"EXPLORER","type":"mcq","prompt":"This is a badminton.\n\n'badminton'의 의미로 가장 알맞은 것은?","choices":["배드민턴","화난","~위에","정원"],"answer":0,"tags":["context","meaning"]},
+    {"id":"E051","section":"EXPLORER","type":"mcq","prompt":"This is a bag.\n\n'bag'의 의미로 가장 알맞은 것은?","choices":["우산","가방","가다","말하다/알려주다"],"answer":1,"tags":["context","meaning"]},
+    {"id":"E052","section":"EXPLORER","type":"mcq","prompt":"This is a call.\n\n'call'의 의미로 가장 알맞은 것은?","choices":["빠른","방문하다","카메라","전화하다/부르다"],"answer":3,"tags":["context","meaning"]},
+    {"id":"E053","section":"EXPLORER","type":"mcq","prompt":"I like camera.\n\n'camera'의 의미로 가장 알맞은 것은?","choices":["우산","비디오","카메라","신사"],"answer":2,"tags":["context","meaning"]},
+    {"id":"E054","section":"EXPLORER","type":"mcq","prompt":"This is a camp.\n\n'camp'의 의미로 가장 알맞은 것은?","choices":["비","보다","캠프","~건너서"],"answer":2,"tags":["context","meaning"]},
+    {"id":"E055","section":"EXPLORER","type":"mcq","prompt":"This is a campaign.\n\n'campaign'의 의미로 가장 알맞은 것은?","choices":["캠페인","이미지/그림","생각/아이디어","뒤/등"],"answer":0,"tags":["context","meaning"]},
+    {"id":"E056","section":"EXPLORER","type":"mcq","prompt":"This is a danger.\n\n'danger'의 의미로 가장 알맞은 것은?","choices":["보다","걷다","직업","위험"],"answer":3,"tags":["context","meaning"]},
+    {"id":"E057","section":"EXPLORER","type":"mcq","prompt":"It is very dark. I cannot see.\n\n'dark'의 의미로 가장 알맞은 것은?","choices":["딸","탁자/테이블","동쪽","어두운"],"answer":3,"tags":["context","meaning"]},
+    {"id":"E058","section":"EXPLORER","type":"mcq","prompt":"This is a daughter.\n\n'daughter'의 의미로 가장 알맞은 것은?","choices":["이해하다","걸다","딸","채소"],"answer":2,"tags":["context","meaning"]},
+    {"id":"E059","section":"EXPLORER","type":"mcq","prompt":"This is a date.\n\n'date'의 의미로 가장 알맞은 것은?","choices":["년","걷다","캠프","날짜/데이트"],"answer":3,"tags":["context","meaning"]},
+    {"id":"E060","section":"EXPLORER","type":"mcq","prompt":"This is a early.\n\n'early'의 의미로 가장 알맞은 것은?","choices":["년","이른","가방","보관하다"],"answer":1,"tags":["context","meaning"]},
+    {"id":"E061","section":"EXPLORER","type":"mcq","prompt":"This is a earth.\n\n'earth'의 의미로 가장 알맞은 것은?","choices":["오다","아기","지구","걸다"],"answer":2,"tags":["context","meaning"]},
+    {"id":"E062","section":"EXPLORER","type":"mcq","prompt":"This is a east.\n\n'east'의 의미로 가장 알맞은 것은?","choices":["게임","이미지/그림","여성/숙녀","동쪽"],"answer":3,"tags":["context","meaning"]},
+    {"id":"E063","section":"EXPLORER","type":"mcq","prompt":"I eat every day.\n\n'eat'의 의미로 가장 알맞은 것은?","choices":["가스","먹다","년","위험"],"answer":1,"tags":["context","meaning"]},
+    {"id":"E064","section":"EXPLORER","type":"mcq","prompt":"This is a fact.\n\n'fact'의 의미로 가장 알맞은 것은?","choices":["가방","여성/숙녀","세일/판매","사실"],"answer":3,"tags":["context","meaning"]},
+    {"id":"E065","section":"EXPLORER","type":"mcq","prompt":"This is a garden.\n\n'garden'의 의미로 가장 알맞은 것은?","choices":["딸","퀴즈","채소","정원"],"answer":3,"tags":["context","meaning"]},
+    {"id":"E066","section":"EXPLORER","type":"mcq","prompt":"This is a gas.\n\n'gas'의 의미로 가장 알맞은 것은?","choices":["가스","게임","방문하다","나쁜"],"answer":0,"tags":["context","meaning"]},
+    {"id":"E067","section":"EXPLORER","type":"mcq","prompt":"This is a gentleman.\n\n'gentleman'의 의미로 가장 알맞은 것은?","choices":["캠페인","정원","신사","오다"],"answer":2,"tags":["context","meaning"]},
+    {"id":"E068","section":"EXPLORER","type":"mcq","prompt":"This is a get.\n\n'get'의 의미로 가장 알맞은 것은?","choices":["정답/답","얻다/받다","~건너서","너/당신"],"answer":1,"tags":["context","meaning"]},
+    {"id":"E069","section":"EXPLORER","type":"mcq","prompt":"This is a hair.\n\n'hair'의 의미로 가장 알맞은 것은?","choices":["키 큰","배드민턴","머리카락","딸"],"answer":2,"tags":["context","meaning"]},
+    {"id":"E070","section":"EXPLORER","type":"mcq","prompt":"I like hamburger.\n\n'hamburger'의 의미로 가장 알맞은 것은?","choices":["보다","라디오","햄버거","배드민턴"],"answer":2,"tags":["context","meaning"]},
+    {"id":"E071","section":"EXPLORER","type":"mcq","prompt":"This is a hand.\n\n'hand'의 의미로 가장 알맞은 것은?","choices":["정원","원하다","말하다/알려주다","손"],"answer":3,"tags":["context","meaning"]},
+    {"id":"E072","section":"EXPLORER","type":"mcq","prompt":"This is a hang.\n\n'hang'의 의미로 가장 알맞은 것은?","choices":["비","~위에","걸다","가스"],"answer":2,"tags":["context","meaning"]},
+    {"id":"E073","section":"EXPLORER","type":"mcq","prompt":"This is a ice.\n\n'ice'의 의미로 가장 알맞은 것은?","choices":["얼음","노란","비","바이올린"],"answer":0,"tags":["context","meaning"]},
+    {"id":"E074","section":"EXPLORER","type":"mcq","prompt":"This is a idea.\n\n'idea'의 의미로 가장 알맞은 것은?","choices":["라디오","페이지","생각하다","생각/아이디어"],"answer":3,"tags":["context","meaning"]},
+    {"id":"E075","section":"EXPLORER","type":"mcq","prompt":"This is a if.\n\n'if'의 의미로 가장 알맞은 것은?","choices":["라디오","기다리다","케이크","만약"],"answer":3,"tags":["context","meaning"]},
+    {"id":"E076","section":"EXPLORER","type":"mcq","prompt":"This is a image.\n\n'image'의 의미로 가장 알맞은 것은?","choices":["너/당신","소금","이미지/그림","귀"],"answer":2,"tags":["context","meaning"]},
+    {"id":"E077","section":"EXPLORER","type":"mcq","prompt":"I like juice.\n\n'juice'의 의미로 가장 알맞은 것은?","choices":["주스","정원","보다","뒤/등"],"answer":0,"tags":["context","meaning"]},
+    {"id":"E078","section":"EXPLORER","type":"mcq","prompt":"Please join our club.\n\n'join'의 의미로 가장 알맞은 것은?","choices":["사실","가스","참여하다","머리카락"],"answer":2,"tags":["context","meaning"]},
+    {"id":"E079","section":"EXPLORER","type":"mcq","prompt":"This is a job.\n\n'job'의 의미로 가장 알맞은 것은?","choices":["주다","말하다/알려주다","오다","직업"],"answer":3,"tags":["context","meaning"]},
+    {"id":"E080","section":"EXPLORER","type":"mcq","prompt":"This is a jam.\n\n'jam'의 의미로 가장 알맞은 것은?","choices":["배드민턴","잼","말하다/알려주다","이해하다"],"answer":1,"tags":["context","meaning"]},
+
+    // ----- MASTER 81~120 (✅ 애매 문항 정답 고정형으로 수정) -----
+    {"id":"M081","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nShe _____ to school every day.","answers":["walk"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+    {"id":"M082","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nI _____ the question.","answers":["understand"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+    {"id":"M083","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nHe is very _____.","answers":["quiet"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+    {"id":"M084","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nIt is raining. Bring your _____.","answers":["umbrella"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+
+    /* ✅ M085: 악기명 복수정답 방지 (철자 힌트로 정답 1개 고정) */
+    {"id":"M085","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nShe plays the v _ _ _ _ n.","answers":["violin"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+
+    {"id":"M086","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nHe has a bad _____.","answers":["habit"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+    {"id":"M087","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nPlease _____ my bag.","answers":["find"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+    {"id":"M088","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\n_____ me your name.","answers":["tell"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+    {"id":"M089","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nI _____ my money in my bag.","answers":["keep"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+    {"id":"M090","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nWe _____ our teacher.","answers":["visit"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+    {"id":"M091","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nI _____ a book after dinner.","answers":["read"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+    {"id":"M092","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nThey _____ salad.","answers":["eat"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+    {"id":"M093","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nWe _____ at the party.","answers":["dance"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+
+    /* ✅ M094: wait로 고정 */
+    {"id":"M094","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nPlease wait here for 5 minutes.","answers":["wait"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+
+    {"id":"M095","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nI _____ up early.","answers":["wake"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+    {"id":"M096","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nIt is _____. I cannot see.","answers":["dark"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+    {"id":"M097","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nThis road is _____.","answers":["safe"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+    {"id":"M098","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nHe runs very _____.","answers":["quick"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+
+    /* ✅ M099: above로 고정 */
+    {"id":"M099","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nThe clock is above the door.","answers":["above"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+
+    /* ✅ M100: under로 고정 */
+    {"id":"M100","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nThe cat is under the table.","answers":["under"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+
+    {"id":"M101","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nGo _____ the street.","answers":["across"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+
+    /* ✅ M102: want로 고정 */
+    {"id":"M102","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nI want some juice.","answers":["want"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+
+    {"id":"M103","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nWe _____ a cake.","answers":["make"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+    {"id":"M104","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nI _____ to the zoo.","answers":["go"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+
+    /* ✅ M105: come으로 고정 */
+    {"id":"M105","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nPlease come here.","answers":["come"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+
+    /* ✅ M106: look을 1단어로 자연스럽게 */
+    {"id":"M106","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nLook! This is my picture.","answers":["look"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+
+    {"id":"M107","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nI _____ it is a good idea.","answers":["think"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+
+    /* ✅ M108: give로 고정 */
+    {"id":"M108","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nGive me the page, please.","answers":["give"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+
+    /* ✅ M109: take 의미를 '가져가다'로 고정 */
+    {"id":"M109","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nTake your jacket with you.","answers":["take"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+
+    {"id":"M110","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nPlease _____ our game.","answers":["join"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+    {"id":"M111","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nThe baby is _____.","answers":["sad"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+    {"id":"M112","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nHe is _____.","answers":["tall"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+    {"id":"M113","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nThe banana is _____.","answers":["yellow"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+    {"id":"M114","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nI went there _____.","answers":["yesterday"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+    {"id":"M115","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nI have a _____.","answers":["question"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+    {"id":"M116","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nWrite the _____.","answers":["answer"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+    {"id":"M117","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nWhat is your _____?","answers":["name"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+    {"id":"M118","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nMy _____ is big.","answers":["family"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+    {"id":"M119","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nWe have a _____.","answers":["garden"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]},
+
+    /* ✅ M120: zoo로 고정 */
+    {"id":"M120","section":"MASTER","type":"short","prompt":"빈칸에 알맞은 영어 단어 1개를 쓰세요:\nWe go to the zoo on Saturday.","answers":["zoo"],"normalize":["lowercase","trim","collapseSpaces"],"tags":["production","spelling"]}
+  ];
 
   // ====== Recommended defaults ======
   const DEFAULTS = {
@@ -425,7 +591,7 @@
       el("div", {class:"desc"}, desc),
       el("div", {class:"stars"}, "★".repeat(stars) + "☆".repeat(3-stars)),
       el("div", {class:"hr"}),
-      el("button", {class:"btn primary", onclick: ()=>beginSection(section)}, unlocked ? "시작" : "잠김", )
+      el("button", {class:"btn primary", onclick: ()=>beginSection(section)}, unlocked ? "시작" : "잠김")
     );
   }
 
@@ -436,9 +602,9 @@
       el("div", {class:"muted small"}, "ROOKIE 28점 이상 → EXPLORER Unlock · EXPLORER 28점 이상 → MASTER Unlock"),
       el("div", {class:"hr"}),
       el("div", {class:"map"},
-        nodeCard("ROOKIE","🟢 ROOKIE (1–40)","4지선다: 뜻/상황/빈칸"),
+        nodeCard("ROOKIE","🟢 ROOKIE (1–40)","4지선다: 뜻/상황(이미지)/빈칸"),
         nodeCard("EXPLORER","🔵 EXPLORER (41–80)","4지선다: 문맥 의미 추론"),
-        nodeCard("MASTER","🔴 MASTER (81–120)","단답형: 1단어 쓰기")
+        nodeCard("MASTER","🔴 MASTER (81–120)","단답형: 1단어 쓰기 (정답 1개 고정)")
       ),
       el("div", {class:"hr"}),
       el("div", {class:"row"},
@@ -485,6 +651,18 @@
       el("div", {class:"hr"})
     );
 
+    // ✅ 이미지 문항 지원
+    if (q.image){
+      main.appendChild(
+        el("div", {class:"imgWrap"},
+          el("img", {class:"qimg", src:q.image, alt:"mission image",
+            onerror: ()=>toast("⚠️ 이미지가 없어요. GitHub 저장소에 assets/img/*.png가 업로드되어 있는지 확인하세요.")
+          })
+        )
+      );
+      main.appendChild(el("div", {class:"hr"}));
+    }
+
     if (q.type==="mcq"){
       const order = shuffledChoices(q);
       const displayed = order.map(i=>q.choices[i]);
@@ -493,7 +671,9 @@
 
       const btns = displayed.map((text,i)=>{
         const isSelected = (i===selectedDisplayedIndex);
-        return el("button", {class:"btn choice"+(isSelected?" selected":""), onclick: ()=>{ submitMCQ(q,i); render(); }}, String.fromCharCode(65+i)+") "+text);
+        return el("button", {class:"btn choice"+(isSelected?" selected":""), onclick: ()=>{ submitMCQ(q,i); render(); }},
+          String.fromCharCode(65+i)+") "+text
+        );
       });
 
       main.appendChild(el("div", {class:"grid4"}, ...btns));
@@ -504,7 +684,9 @@
       ));
     } else {
       const prevText = state.answers[q.id]?.text ?? "";
-      main.appendChild(el("input", {value: prevText, placeholder:"정답 단어 1개 입력", oninput:(e)=>{ submitShort(q,e.target.value); }}));
+      main.appendChild(el("input", {value: prevText, placeholder:"정답 단어 1개 입력",
+        oninput:(e)=>{ submitShort(q,e.target.value); }
+      }));
       main.appendChild(el("div", {class:"hr"}));
       main.appendChild(el("div", {class:"row"},
         el("button", {class:"btn primary", onclick: ()=>nextQuestion()}, "다음 ▶"),
@@ -584,7 +766,7 @@
       el("div", {class:"row"},
         el("button", {class:"btn primary", onclick: ()=>exportLatestJSON()}, "📥 최근 결과 JSON 저장"),
         el("button", {class:"btn good", onclick: ()=>exportLatestCSV()}, "📥 최근 결과 CSV 저장"),
-        el("button", {class:"btn warn", onclick: ()=>exportAllAttemptsJSON()}, "📦 전체 기록 JSON 저장"),
+        el("button", {class:"btn warn", onclick: ()=>exportAllAttemptsJSON()}, "📦 전체 기록 JSON 저장")
       ),
       el("div", {class:"hr"}),
       el("div", {class:"row"},
