@@ -3,563 +3,621 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Word Mission Game 120 (Stable)</title>
+  <title>Word Mission Game (120) - Offline Web App</title>
   <style>
-    :root{
+    :root {
       --bg:#0b1020; --card:#121a33; --text:#eef2ff; --muted:#a9b1d6;
-      --line:#27335f; --accent:#7aa2f7; --good:#9ece6a; --bad:#f7768e; --warn:#e0af68;
-      --shadow:0 10px 30px rgba(0,0,0,.35); --r:18px;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans KR","Apple SD Gothic Neo",Arial,sans-serif;
+      --accent:#7aa2f7; --good:#9ece6a; --bad:#f7768e; --warn:#e0af68; --line:#27335f;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 18px;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", "Apple SD Gothic Neo", Arial, sans-serif;
     }
-    body{margin:0;background:radial-gradient(1200px 600px at 20% 0%,#1a2550,var(--bg));color:var(--text);}
-    .wrap{max-width:980px;margin:0 auto;padding:22px;}
-    header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;}
-    .brand{display:flex;align-items:center;gap:12px;}
-    .logo{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#bb9af7);box-shadow:var(--shadow);}
-    h1{font-size:18px;margin:0;line-height:1.2;}
-    .sub{color:var(--muted);font-size:13px;margin-top:4px;}
-    .pill{font-size:12px;padding:6px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted);background:rgba(255,255,255,.04);}
-    .row{display:flex;gap:16px;flex-wrap:wrap;}
-    .card{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);}
-    .pad{padding:18px;}
-    .grow{flex:1 1 520px;}
-    .side{flex:1 1 260px;}
-    .big{font-size:22px;font-weight:850;letter-spacing:-.02em;}
-    .muted{color:var(--muted);}
-    .small{font-size:12px;line-height:1.55;}
-    label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;}
-    input{width:100%;padding:12px 12px;border-radius:14px;border:1px solid var(--line);background:rgba(0,0,0,.25);color:var(--text);outline:none;}
-    .btn{cursor:pointer;border:none;border-radius:14px;padding:12px 14px;font-weight:750;color:var(--text);
-         background:rgba(255,255,255,.08);border:1px solid var(--line);}
-    .btn:hover{filter:brightness(1.05);}
-    .btn.primary{background:linear-gradient(135deg,var(--accent),#bb9af7);border:none;}
-    .btn.good{background:rgba(158,206,106,.15);border:1px solid rgba(158,206,106,.35);}
-    .btn.bad{background:rgba(247,118,142,.15);border:1px solid rgba(247,118,142,.35);}
-    .btn.warn{background:rgba(224,175,104,.16);border:1px solid rgba(224,175,104,.35);}
-    .hr{height:1px;background:var(--line);margin:14px 0;}
-    .hud{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
-    .meter{height:10px;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:999px;overflow:hidden;min-width:220px;}
-    .bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),#bb9af7);}
-    .qtext{font-size:16px;line-height:1.55;white-space:pre-wrap;}
-    .grid4{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
-    @media (min-width:760px){.grid4{grid-template-columns:repeat(4,1fr);}}
-    .choice{text-align:left;}
-
-    /* ✅ 선택한 보기 진하게 표시(요청 반영) */
-    .choice.selected{
-      background:linear-gradient(135deg,#7aa2f7,#bb9af7);
-      border:none;
-    }
-
-    .tagrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
-    .tag{font-size:11px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--muted);}
-    .map{display:grid;grid-template-columns:1fr;gap:12px;}
-    @media (min-width:760px){.map{grid-template-columns:repeat(3,1fr);}}
-    .node{padding:14px;border-radius:16px;border:1px solid var(--line);background:rgba(0,0,0,.20);}
-    .node.locked{opacity:.55;}
-    .node h3{margin:0 0 4px 0;}
-    .node .desc{color:var(--muted);font-size:12px;line-height:1.35;}
-    .footer{margin-top:18px;color:var(--muted);font-size:12px;line-height:1.55;}
+    body { margin:0; background: radial-gradient(1200px 600px at 20% 0%, #1a2550, var(--bg)); color:var(--text); }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 24px; }
+    header { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom: 16px; }
+    .brand { display:flex; align-items:center; gap:12px; }
+    .logo { width:44px; height:44px; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #bb9af7); box-shadow: var(--shadow); }
+    h1 { font-size: 18px; margin:0; line-height:1.2; }
+    .sub { color:var(--muted); font-size: 13px; margin-top:4px; }
+    .pill { font-size:12px; padding:6px 10px; border:1px solid var(--line); border-radius: 999px; color:var(--muted); background: rgba(255,255,255,.04); }
+    .row { display:flex; gap:16px; flex-wrap:wrap; }
+    .card { background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); border:1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .pad { padding: 18px; }
+    .grow { flex: 1 1 420px; }
+    .side { flex: 1 1 260px; }
+    .btn { cursor:pointer; border:none; border-radius: 14px; padding: 12px 14px; font-weight: 700; color: var(--text);
+            background: rgba(255,255,255,.08); border:1px solid var(--line); }
+    .btn:hover { filter: brightness(1.05); }
+    .btn.primary { background: linear-gradient(135deg, var(--accent), #bb9af7); border:none; }
+    .btn.good { background: rgba(158,206,106,.15); border:1px solid rgba(158,206,106,.35); }
+    .btn.warn { background: rgba(224,175,104,.16); border:1px solid rgba(224,175,104,.35); }
+    .btn.bad { background: rgba(247,118,142,.15); border:1px solid rgba(247,118,142,.35); }
+    .btn.slim { padding: 10px 12px; border-radius: 12px; font-weight: 650; }
+    .grid2 { display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .grid4 { display:grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    @media (min-width: 760px) { .grid4 { grid-template-columns: repeat(4, 1fr); } }
+    input { width: 100%; padding: 12px 12px; border-radius: 14px; border:1px solid var(--line);
+      background: rgba(0,0,0,.25); color: var(--text); outline: none; }
+    label { display:block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .hud { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom: 10px; flex-wrap:wrap; }
+    .meter { height: 10px; background: rgba(255,255,255,.06); border:1px solid var(--line); border-radius: 999px; overflow:hidden; }
+    .bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), #bb9af7); }
+    .muted { color: var(--muted); }
+    .big { font-size: 22px; font-weight: 850; letter-spacing: -.02em; }
+    .qtext { font-size: 16px; line-height: 1.55; white-space: pre-wrap; }
+    .choice { text-align:left; }
+    .choice.selected { outline: 2px solid rgba(122,162,247,.65); }
+    .tagrow { display:flex; gap:8px; flex-wrap:wrap; margin-top: 10px; }
+    .tag { font-size: 11px; padding: 6px 10px; border-radius: 999px; border:1px solid var(--line); background: rgba(255,255,255,.04); color: var(--muted); }
+    .map { display:grid; grid-template-columns: 1fr; gap: 12px; }
+    @media (min-width: 760px) { .map { grid-template-columns: repeat(3, 1fr); } }
+    .node { padding: 14px; border-radius: 16px; border:1px solid var(--line); background: rgba(0,0,0,.20); }
+    .node h3 { margin:0 0 4px 0; }
+    .node .desc { color: var(--muted); font-size: 12px; line-height: 1.35; }
+    .node.locked { opacity: .55; }
+    .node .stars { margin-top: 10px; color: var(--warn); font-size: 14px; }
+    .hr { height: 1px; background: var(--line); margin: 14px 0; }
+    .small { font-size: 12px; }
+    .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+            font-size: 12px; padding: 2px 6px; border-radius: 8px; background: rgba(255,255,255,.08); border: 1px solid var(--line); }
+    .footer { margin-top: 22px; color: var(--muted); font-size: 12px; line-height: 1.55; }
+    .toast { position: fixed; right: 14px; bottom: 14px; background: rgba(18,26,51,.92); border:1px solid var(--line);
+             color: var(--text); padding: 12px 14px; border-radius: 14px; box-shadow: var(--shadow); display:none; max-width: 360px; }
   </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <div class="brand">
-      <div class="logo" aria-hidden="true"></div>
-      <div>
-        <h1>Word Mission Game 120 (Stable)</h1>
-        <div class="sub">ROOKIE → EXPLORER → MASTER · 120문항 · 오류 없는 안정 버전</div>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>Word Mission Game (120)</h1>
+          <div class="sub">ROOKIE → EXPLORER → MASTER · 오프라인 저장/내보내기 포함</div>
+        </div>
       </div>
+      <div class="pill" id="statusPill">Ready</div>
+    </header>
+
+    <div id="app"></div>
+
+    <div class="footer">
+      <div>💾 자동 저장: 진행/결과는 이 브라우저의 <span class="kbd">localStorage</span>에 자동 저장됩니다.</div>
+      <div>📤 내보내기: 교사용으로 <span class="kbd">JSON</span> / <span class="kbd">CSV</span> 파일을 다운로드할 수 있습니다.</div>
+      <div>🔁 가져오기: 이전에 내보낸 JSON을 다시 불러와 리포트를 복원할 수 있습니다.</div>
     </div>
-    <div class="pill" id="statusPill">Ready</div>
-  </header>
-
-  <div id="app"></div>
-
-  <div class="footer">
-    <div>✅ 이 버전은 “안정 우선”으로 설계되어 있습니다. (구글시트 자동 수집은 다음 단계에서 깨끗하게 붙입니다.)</div>
-    <div>✅ GitHub Pages에서 수정 후 반영이 늦으면 <b>Ctrl+Shift+R</b> 또는 시크릿 창으로 확인하세요.</div>
   </div>
-</div>
+
+  <div class="toast" id="toast"></div>
 
 <script>
-/* ===============================
-   0) 데이터: 120 단어(영-한)
-   =============================== */
-const WORDS = [
-  ["rain","비"],["snow","눈"],["wind","바람"],["cloud","구름"],["sun","태양"],["sky","하늘"],["water","물"],["river","강"],["sea","바다"],["mountain","산"],
-  ["tree","나무"],["flower","꽃"],["leaf","잎"],["grass","풀"],["stone","돌"],["fire","불"],["ice","얼음"],["air","공기"],["earth","땅"],["star","별"],
-  ["book","책"],["pen","펜"],["pencil","연필"],["paper","종이"],["bag","가방"],["desk","책상"],["chair","의자"],["classroom","교실"],["school","학교"],["teacher","선생님"],
-  ["student","학생"],["friend","친구"],["family","가족"],["mother","엄마"],["father","아빠"],["sister","여동생/언니"],["brother","남동생/오빠"],["baby","아기"],["name","이름"],["age","나이"],
-  ["time","시간"],["day","날"],["week","주"],["month","달"],["year","년"],["today","오늘"],["tomorrow","내일"],["yesterday","어제"],["morning","아침"],["night","밤"],
-  ["eat","먹다"],["drink","마시다"],["sleep","자다"],["walk","걷다"],["run","달리다"],["jump","뛰다"],["sit","앉다"],["stand","서다"],["open","열다"],["close","닫다"],
-  ["read","읽다"],["write","쓰다"],["listen","듣다"],["speak","말하다"],["study","공부하다"],["teach","가르치다"],["learn","배우다"],["play","놀다/하다"],["make","만들다"],["help","돕다"],
-  ["go","가다"],["come","오다"],["leave","떠나다"],["arrive","도착하다"],["meet","만나다"],["visit","방문하다"],["call","전화하다"],["use","사용하다"],["find","찾다"],["keep","보관하다/유지하다"],
-  ["good","좋은"],["bad","나쁜"],["big","큰"],["small","작은"],["long","긴"],["short","짧은"],["new","새로운"],["old","오래된"],["hot","뜨거운"],["cold","차가운"],
-  ["happy","행복한"],["sad","슬픈"],["angry","화난"],["tired","피곤한"],["hungry","배고픈"],["thirsty","목마른"],["busy","바쁜"],["free","한가한/자유로운"],["easy","쉬운"],["difficult","어려운"],
-  ["fast","빠른"],["slow","느린"],["early","이른"],["late","늦은"],["beautiful","아름다운"],["kind","친절한"],["smart","똑똑한"],["strong","강한"],["weak","약한"],["clean","깨끗한"],
-  ["home","집"],["room","방"],["door","문"],["window","창문"],["street","거리"],["city","도시"],["country","나라"],["store","가게"],["market","시장"],["hospital","병원"]
-]; // 120쌍
-// ✅ (구글시트 저장용) 본인 웹앱 /exec URL로 교체하세요
-const SHEETS_WEBAPP_URL = "https://script.google.com/macros/s/여기/exec";
-/* ===============================
-   1) 유틸
-   =============================== */
-const $ = (id)=>document.getElementById(id);
-function shuffle(arr){
-  const a = arr.slice();
-  for(let i=a.length-1;i>0;i--){
-    const j = Math.floor(Math.random()*(i+1));
-    [a[i],a[j]]=[a[j],a[i]];
-  }
-  return a;
-}
-function setStatus(t){ $("statusPill").textContent=t; }
-function clamp(n,a,b){ return Math.max(a, Math.min(b,n)); }
-function norm(s){ return String(s||"").trim().toLowerCase().replace(/\s+/g," "); }
+  // ====== Question Bank (120) ======
+  const QUESTION_BANK = [{"id": "R001", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: baby", "choices": ["아기", "방문하다", "우산", "먹다"], "answer": 0, "tags": ["meaning", "basic"]}, {"id": "R002", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: cake", "choices": ["신사", "전화하다/부르다", "빠른", "케이크"], "answer": 3, "tags": ["meaning", "basic"]}, {"id": "R003", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: dance", "choices": ["직업", "생각하다", "실패하다", "춤추다"], "answer": 3, "tags": ["meaning", "basic"]}, {"id": "R004", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: ear", "choices": ["얼굴", "슬픈", "생각/아이디어", "귀"], "answer": 3, "tags": ["meaning", "basic"]}, {"id": "R005", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: face", "choices": ["화난", "얼굴", "보다", "년"], "answer": 1, "tags": ["meaning", "basic"]}, {"id": "R006", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: game", "choices": ["게임", "생각/아이디어", "깨다", "너/당신"], "answer": 0, "tags": ["meaning", "basic"]}, {"id": "R007", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: habit", "choices": ["생각/아이디어", "지구", "딸", "습관"], "answer": 3, "tags": ["meaning", "basic"]}, {"id": "R008", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: jacket", "choices": ["비디오", "오다", "얼굴", "재킷"], "answer": 3, "tags": ["meaning", "basic"]}, {"id": "R009", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: keep", "choices": ["여왕", "가스", "보관하다", "생각/아이디어"], "answer": 2, "tags": ["meaning", "basic"]}, {"id": "R010", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: lady", "choices": ["오다", "동쪽", "여성/숙녀", "정원"], "answer": 2, "tags": ["meaning", "basic"]}, {"id": "R011", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: mad", "choices": ["경주/인종", "년", "화난", "원하다"], "answer": 2, "tags": ["meaning", "basic"]}, {"id": "R012", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: name", "choices": ["나쁜", "직업", "방문하다", "이름"], "answer": 3, "tags": ["meaning", "basic"]}, {"id": "R013", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: page", "choices": ["키 큰", "네", "보다", "페이지"], "answer": 3, "tags": ["meaning", "basic"]}, {"id": "R014", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: queen", "choices": ["오다", "딸", "정원", "여왕"], "answer": 3, "tags": ["meaning", "basic"]}, {"id": "R015", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: rabbit", "choices": ["토끼", "퀴즈", "주스", "찾다"], "answer": 0, "tags": ["meaning", "basic"]}, {"id": "R016", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: sad", "choices": ["슬픈", "조용한", "깨다", "재킷"], "answer": 0, "tags": ["meaning", "basic"]}, {"id": "R017", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: table", "choices": ["만들다", "지구", "탁자/테이블", "실패하다"], "answer": 2, "tags": ["meaning", "basic"]}, {"id": "R018", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: ugly", "choices": ["실패하다", "이미지/그림", "원하다", "못생긴"], "answer": 3, "tags": ["meaning", "basic"]}, {"id": "R019", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: vegetable", "choices": ["방문하다", "너/당신", "가방", "채소"], "answer": 3, "tags": ["meaning", "basic"]}, {"id": "R020", "section": "ROOKIE", "type": "mcq", "prompt": "단어의 뜻을 고르세요: wait", "choices": ["동물원", "기다리다", "아기", "햄버거"], "answer": 1, "tags": ["meaning", "basic"]}, {"id": "R021", "section": "ROOKIE", "type": "mcq", "prompt": "🖼️ 비가 오는 하늘\n\n그림(상황)과 어울리는 단어는?", "choices": ["early", "baby", "jam", "rain"], "answer": 3, "tags": ["scene", "basic"]}, {"id": "R022", "section": "ROOKIE", "type": "mcq", "prompt": "🖼️ 아이가 음식을 먹는 모습\n\n그림(상황)과 어울리는 단어는?", "choices": ["rabbit", "find", "eat", "see"], "answer": 2, "tags": ["scene", "basic"]}, {"id": "R023", "section": "ROOKIE", "type": "mcq", "prompt": "🖼️ 사람이 길을 걷는 모습\n\n그림(상황)과 어울리는 단어는?", "choices": ["juice", "you", "ice", "walk"], "answer": 3, "tags": ["scene", "basic"]}, {"id": "R024", "section": "ROOKIE", "type": "mcq", "prompt": "🖼️ 책을 읽는 모습\n\n그림(상황)과 어울리는 단어는?", "choices": ["rain", "ear", "read", "about"], "answer": 2, "tags": ["scene", "basic"]}, {"id": "R025", "section": "ROOKIE", "type": "mcq", "prompt": "🖼️ 춤추는 모습\n\n그림(상황)과 어울리는 단어는?", "choices": ["habit", "violin", "dance", "give"], "answer": 2, "tags": ["scene", "basic"]}, {"id": "R026", "section": "ROOKIE", "type": "mcq", "prompt": "🖼️ 우산\n\n그림(상황)과 어울리는 단어는?", "choices": ["want", "umbrella", "rain", "walk"], "answer": 1, "tags": ["scene", "basic"]}, {"id": "R027", "section": "ROOKIE", "type": "mcq", "prompt": "🖼️ 토끼\n\n그림(상황)과 어울리는 단어는?", "choices": ["rabbit", "across", "if", "juice"], "answer": 0, "tags": ["scene", "basic"]}, {"id": "R028", "section": "ROOKIE", "type": "mcq", "prompt": "🖼️ 카메라\n\n그림(상황)과 어울리는 단어는?", "choices": ["camera", "see", "violin", "keep"], "answer": 0, "tags": ["scene", "basic"]}, {"id": "R029", "section": "ROOKIE", "type": "mcq", "prompt": "🖼️ 바이올린\n\n그림(상황)과 어울리는 단어는?", "choices": ["violin", "garden", "eat", "bag"], "answer": 0, "tags": ["scene", "basic"]}, {"id": "R030", "section": "ROOKIE", "type": "mcq", "prompt": "🖼️ 햄버거\n\n그림(상황)과 어울리는 단어는?", "choices": ["video", "queen", "hamburger", "get"], "answer": 2, "tags": ["scene", "basic"]}, {"id": "R031", "section": "ROOKIE", "type": "mcq", "prompt": "빈칸에 알맞은 단어를 고르세요:\nI ___ a cake.", "choices": ["go", "east", "eat", "rain"], "answer": 2, "tags": ["blank", "basic"]}, {"id": "R032", "section": "ROOKIE", "type": "mcq", "prompt": "빈칸에 알맞은 단어를 고르세요:\nI ___ to school.", "choices": ["baby", "make", "come", "walk"], "answer": 3, "tags": ["blank", "basic"]}, {"id": "R033", "section": "ROOKIE", "type": "mcq", "prompt": "빈칸에 알맞은 단어를 고르세요:\nThe baby is ___.", "choices": ["sad", "date", "get", "job"], "answer": 0, "tags": ["blank", "basic"]}, {"id": "R034", "section": "ROOKIE", "type": "mcq", "prompt": "빈칸에 알맞은 단어를 고르세요:\nIt is very ___.", "choices": ["yellow", "take", "job", "dark"], "answer": 3, "tags": ["blank", "basic"]}, {"id": "R035", "section": "ROOKIE", "type": "mcq", "prompt": "빈칸에 알맞은 단어를 고르세요:\nIt will ___ today.", "choices": ["daughter", "quick", "rain", "queen"], "answer": 2, "tags": ["blank", "basic"]}, {"id": "R036", "section": "ROOKIE", "type": "mcq", "prompt": "빈칸에 알맞은 단어를 고르세요:\nI ___ a book.", "choices": ["sad", "look", "dark", "read"], "answer": 3, "tags": ["blank", "basic"]}, {"id": "R037", "section": "ROOKIE", "type": "mcq", "prompt": "빈칸에 알맞은 단어를 고르세요:\nI ___ some juice.", "choices": ["quick", "want", "get", "queen"], "answer": 1, "tags": ["blank", "basic"]}, {"id": "R038", "section": "ROOKIE", "type": "mcq", "prompt": "빈칸에 알맞은 단어를 고르세요:\nWe ___ a cake.", "choices": ["rain", "if", "radio", "make"], "answer": 3, "tags": ["blank", "basic"]}, {"id": "R039", "section": "ROOKIE", "type": "mcq", "prompt": "빈칸에 알맞은 단어를 고르세요:\nWe ___ to the zoo.", "choices": ["question", "go", "early", "hamburger"], "answer": 1, "tags": ["blank", "basic"]}, {"id": "R040", "section": "ROOKIE", "type": "mcq", "prompt": "빈칸에 알맞은 단어를 고르세요:\nPlease ___ your jacket.", "choices": ["very", "yellow", "take", "queen"], "answer": 2, "tags": ["blank", "basic"]}, {"id": "E041", "section": "EXPLORER", "type": "mcq", "prompt": "I wake every day.\n\n'wake'의 의미로 가장 알맞은 것은?", "choices": ["걸다", "세일/판매", "조용한", "깨다"], "answer": 3, "tags": ["context", "meaning"]}, {"id": "E042", "section": "EXPLORER", "type": "mcq", "prompt": "I walk every day.\n\n'walk'의 의미로 가장 알맞은 것은?", "choices": ["~에 대하여", "걷다", "샐러드", "주스"], "answer": 1, "tags": ["context", "meaning"]}, {"id": "E043", "section": "EXPLORER", "type": "mcq", "prompt": "This is a wall.\n\n'wall'의 의미로 가장 알맞은 것은?", "choices": ["행동하다", "만들다", "벽", "게임"], "answer": 2, "tags": ["context", "meaning"]}, {"id": "E044", "section": "EXPLORER", "type": "mcq", "prompt": "This is a want.\n\n'want'의 의미로 가장 알맞은 것은?", "choices": ["탁자/테이블", "원하다", "만들다", "가져가다/타다/걸리다"], "answer": 1, "tags": ["context", "meaning"]}, {"id": "E045", "section": "EXPLORER", "type": "mcq", "prompt": "This is a year.\n\n'year'의 의미로 가장 알맞은 것은?", "choices": ["찾다", "탁자/테이블", "년", "방문하다"], "answer": 2, "tags": ["context", "meaning"]}, {"id": "E046", "section": "EXPLORER", "type": "mcq", "prompt": "This is a zoo.\n\n'zoo'의 의미로 가장 알맞은 것은?", "choices": ["~건너서", "얻다/받다", "동물원", "위험"], "answer": 2, "tags": ["context", "meaning"]}, {"id": "E047", "section": "EXPLORER", "type": "mcq", "prompt": "This is a about.\n\n'about'의 의미로 가장 알맞은 것은?", "choices": ["채소", "매우", "찾다", "~에 대하여"], "answer": 3, "tags": ["context", "meaning"]}, {"id": "E048", "section": "EXPLORER", "type": "mcq", "prompt": "This is a back.\n\n'back'의 의미로 가장 알맞은 것은?", "choices": ["가져가다/타다/걸리다", "질문", "전화하다/부르다", "뒤/등"], "answer": 3, "tags": ["context", "meaning"]}, {"id": "E049", "section": "EXPLORER", "type": "mcq", "prompt": "This is a bad.\n\n'bad'의 의미로 가장 알맞은 것은?", "choices": ["비디오", "나쁜", "여왕", "이미지/그림"], "answer": 1, "tags": ["context", "meaning"]}, {"id": "E050", "section": "EXPLORER", "type": "mcq", "prompt": "This is a badminton.\n\n'badminton'의 의미로 가장 알맞은 것은?", "choices": ["배드민턴", "화난", "~위에", "정원"], "answer": 0, "tags": ["context", "meaning"]}, {"id": "E051", "section": "EXPLORER", "type": "mcq", "prompt": "This is a bag.\n\n'bag'의 의미로 가장 알맞은 것은?", "choices": ["우산", "가방", "가다", "말하다/알려주다"], "answer": 1, "tags": ["context", "meaning"]}, {"id": "E052", "section": "EXPLORER", "type": "mcq", "prompt": "This is a call.\n\n'call'의 의미로 가장 알맞은 것은?", "choices": ["빠른", "방문하다", "카메라", "전화하다/부르다"], "answer": 3, "tags": ["context", "meaning"]}, {"id": "E053", "section": "EXPLORER", "type": "mcq", "prompt": "I like camera.\n\n'camera'의 의미로 가장 알맞은 것은?", "choices": ["우산", "비디오", "카메라", "신사"], "answer": 2, "tags": ["context", "meaning"]}, {"id": "E054", "section": "EXPLORER", "type": "mcq", "prompt": "This is a camp.\n\n'camp'의 의미로 가장 알맞은 것은?", "choices": ["비", "보다", "캠프", "~건너서"], "answer": 2, "tags": ["context", "meaning"]}, {"id": "E055", "section": "EXPLORER", "type": "mcq", "prompt": "This is a campaign.\n\n'campaign'의 의미로 가장 알맞은 것은?", "choices": ["캠페인", "이미지/그림", "생각/아이디어", "뒤/등"], "answer": 0, "tags": ["context", "meaning"]}, {"id": "E056", "section": "EXPLORER", "type": "mcq", "prompt": "This is a danger.\n\n'danger'의 의미로 가장 알맞은 것은?", "choices": ["보다", "걷다", "직업", "위험"], "answer": 3, "tags": ["context", "meaning"]}, {"id": "E057", "section": "EXPLORER", "type": "mcq", "prompt": "It is very dark. I cannot see.\n\n'dark'의 의미로 가장 알맞은 것은?", "choices": ["딸", "탁자/테이블", "동쪽", "어두운"], "answer": 3, "tags": ["context", "meaning"]}, {"id": "E058", "section": "EXPLORER", "type": "mcq", "prompt": "This is a daughter.\n\n'daughter'의 의미로 가장 알맞은 것은?", "choices": ["이해하다", "걸다", "딸", "채소"], "answer": 2, "tags": ["context", "meaning"]}, {"id": "E059", "section": "EXPLORER", "type": "mcq", "prompt": "This is a date.\n\n'date'의 의미로 가장 알맞은 것은?", "choices": ["년", "걷다", "캠프", "날짜/데이트"], "answer": 3, "tags": ["context", "meaning"]}, {"id": "E060", "section": "EXPLORER", "type": "mcq", "prompt": "This is a early.\n\n'early'의 의미로 가장 알맞은 것은?", "choices": ["년", "이른", "가방", "보관하다"], "answer": 1, "tags": ["context", "meaning"]}, {"id": "E061", "section": "EXPLORER", "type": "mcq", "prompt": "This is a earth.\n\n'earth'의 의미로 가장 알맞은 것은?", "choices": ["오다", "아기", "지구", "걸다"], "answer": 2, "tags": ["context", "meaning"]}, {"id": "E062", "section": "EXPLORER", "type": "mcq", "prompt": "This is a east.\n\n'east'의 의미로 가장 알맞은 것은?", "choices": ["게임", "이미지/그림", "여성/숙녀", "동쪽"], "answer": 3, "tags": ["context", "meaning"]}, {"id": "E063", "section": "EXPLORER", "type": "mcq", "prompt": "I eat every day.\n\n'eat'의 의미로 가장 알맞은 것은?", "choices": ["가스", "먹다", "년", "위험"], "answer": 1, "tags": ["context", "meaning"]}, {"id": "E064", "section": "EXPLORER", "type": "mcq", "prompt": "This is a fact.\n\n'fact'의 의미로 가장 알맞은 것은?", "choices": ["가방", "여성/숙녀", "세일/판매", "사실"], "answer": 3, "tags": ["context", "meaning"]}, {"id": "E065", "section": "EXPLORER", "type": "mcq", "prompt": "This is a garden.\n\n'garden'의 의미로 가장 알맞은 것은?", "choices": ["딸", "퀴즈", "채소", "정원"], "answer": 3, "tags": ["context", "meaning"]}, {"id": "E066", "section": "EXPLORER", "type": "mcq", "prompt": "This is a gas.\n\n'gas'의 의미로 가장 알맞은 것은?", "choices": ["가스", "게임", "방문하다", "나쁜"], "answer": 0, "tags": ["context", "meaning"]}, {"id": "E067", "section": "EXPLORER", "type": "mcq", "prompt": "This is a gentleman.\n\n'gentleman'의 의미로 가장 알맞은 것은?", "choices": ["캠페인", "정원", "신사", "오다"], "answer": 2, "tags": ["context", "meaning"]}, {"id": "E068", "section": "EXPLORER", "type": "mcq", "prompt": "This is a get.\n\n'get'의 의미로 가장 알맞은 것은?", "choices": ["정답/답", "얻다/받다", "~건너서", "너/당신"], "answer": 1, "tags": ["context", "meaning"]}, {"id": "E069", "section": "EXPLORER", "type": "mcq", "prompt": "This is a hair.\n\n'hair'의 의미로 가장 알맞은 것은?", "choices": ["키 큰", "배드민턴", "머리카락", "딸"], "answer": 2, "tags": ["context", "meaning"]}, {"id": "E070", "section": "EXPLORER", "type": "mcq", "prompt": "I like hamburger.\n\n'hamburger'의 의미로 가장 알맞은 것은?", "choices": ["보다", "라디오", "햄버거", "배드민턴"], "answer": 2, "tags": ["context", "meaning"]}, {"id": "E071", "section": "EXPLORER", "type": "mcq", "prompt": "This is a hand.\n\n'hand'의 의미로 가장 알맞은 것은?", "choices": ["정원", "원하다", "말하다/알려주다", "손"], "answer": 3, "tags": ["context", "meaning"]}, {"id": "E072", "section": "EXPLORER", "type": "mcq", "prompt": "This is a hang.\n\n'hang'의 의미로 가장 알맞은 것은?", "choices": ["비", "~위에", "걸다", "가스"], "answer": 2, "tags": ["context", "meaning"]}, {"id": "E073", "section": "EXPLORER", "type": "mcq", "prompt": "This is a ice.\n\n'ice'의 의미로 가장 알맞은 것은?", "choices": ["얼음", "노란", "비", "바이올린"], "answer": 0, "tags": ["context", "meaning"]}, {"id": "E074", "section": "EXPLORER", "type": "mcq", "prompt": "This is a idea.\n\n'idea'의 의미로 가장 알맞은 것은?", "choices": ["라디오", "페이지", "생각하다", "생각/아이디어"], "answer": 3, "tags": ["context", "meaning"]}, {"id": "E075", "section": "EXPLORER", "type": "mcq", "prompt": "This is a if.\n\n'if'의 의미로 가장 알맞은 것은?", "choices": ["라디오", "기다리다", "케이크", "만약"], "answer": 3, "tags": ["context", "meaning"]}, {"id": "E076", "section": "EXPLORER", "type": "mcq", "prompt": "This is a image.\n\n'image'의 의미로 가장 알맞은 것은?", "choices": ["너/당신", "소금", "이미지/그림", "귀"], "answer": 2, "tags": ["context", "meaning"]}, {"id": "E077", "section": "EXPLORER", "type": "mcq", "prompt": "I like juice.\n\n'juice'의 의미로 가장 알맞은 것은?", "choices": ["주스", "정원", "보다", "뒤/등"], "answer": 0, "tags": ["context", "meaning"]}, {"id": "E078", "section": "EXPLORER", "type": "mcq", "prompt": "Please join our club.\n\n'join'의 의미로 가장 알맞은 것은?", "choices": ["사실", "가스", "참여하다", "머리카락"], "answer": 2, "tags": ["context", "meaning"]}, {"id": "E079", "section": "EXPLORER", "type": "mcq", "prompt": "This is a job.\n\n'job'의 의미로 가장 알맞은 것은?", "choices": ["주다", "말하다/알려주다", "오다", "직업"], "answer": 3, "tags": ["context", "meaning"]}, {"id": "E080", "section": "EXPLORER", "type": "mcq", "prompt": "This is a jam.\n\n'jam'의 의미로 가장 알맞은 것은?", "choices": ["배드민턴", "잼", "말하다/알려주다", "이해하다"], "answer": 1, "tags": ["context", "meaning"]}, {"id": "M081", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nShe _____ to school every day.", "answers": ["walk"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M082", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nI _____ the question.", "answers": ["understand"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M083", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nHe is very _____.", "answers": ["quiet"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M084", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nIt is raining. Bring your _____.", "answers": ["umbrella"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M085", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nShe plays the _____.", "answers": ["violin"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M086", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nHe has a bad _____.", "answers": ["habit"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M087", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nPlease _____ my bag.", "answers": ["find"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M088", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\n_____ me your name.", "answers": ["tell"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M089", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nI _____ my money in my bag.", "answers": ["keep"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M090", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nWe _____ our teacher.", "answers": ["visit"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M091", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nI _____ a book after dinner.", "answers": ["read"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M092", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nThey _____ salad.", "answers": ["eat"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M093", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nWe _____ at the party.", "answers": ["dance"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M094", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nPlease _____ here.", "answers": ["wait"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M095", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nI _____ up early.", "answers": ["wake"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M096", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nIt is _____. I cannot see.", "answers": ["dark"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M097", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nThis road is _____.", "answers": ["safe"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M098", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nHe runs very _____.", "answers": ["quick"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M099", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nThe clock is _____ the door.", "answers": ["above"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M100", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nThe cat is _____ the table.", "answers": ["under"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M101", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nGo _____ the street.", "answers": ["across"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M102", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nI _____ some juice.", "answers": ["want"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M103", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nWe _____ a cake.", "answers": ["make"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M104", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nI _____ to the zoo.", "answers": ["go"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M105", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nPlease _____ here.", "answers": ["come"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M106", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\n_____ at this image.", "answers": ["look"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M107", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nI _____ it is a good idea.", "answers": ["think"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M108", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\n_____ me the page.", "answers": ["give"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M109", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\n_____ your jacket.", "answers": ["take"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M110", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nPlease _____ our game.", "answers": ["join"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M111", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nThe baby is _____.", "answers": ["sad"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M112", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nHe is _____.", "answers": ["tall"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M113", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nThe banana is _____.", "answers": ["yellow"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M114", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nI went there _____.", "answers": ["yesterday"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M115", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nI have a _____.", "answers": ["question"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M116", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nWrite the _____.", "answers": ["answer"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M117", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nWhat is your _____?", "answers": ["name"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M118", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nMy _____ is big.", "answers": ["family"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M119", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nWe have a _____.", "answers": ["garden"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}, {"id": "M120", "section": "MASTER", "type": "short", "prompt": "빈칸에 알맞은 영어 단어 1개를 쓰세요:\nWe go to the _____.", "answers": ["zoo"], "normalize": ["lowercase", "trim", "collapseSpaces"], "tags": ["production", "spelling"]}];
 
-/* ===============================
-   2) 120문항 생성
-   =============================== */
-function makeChoices(correctIndex, pool, getText){
-  const others = [];
-  while(others.length<3){
-    const r = Math.floor(Math.random()*pool.length);
-    if(r===correctIndex) continue;
-    if(others.includes(r)) continue;
-    others.push(r);
-  }
-  const choiceIdx = shuffle([correctIndex, ...others]);
-  const choices = choiceIdx.map(i=>getText(pool[i]));
-  const answer = choiceIdx.indexOf(correctIndex);
-  return {choices, answer};
-}
-
-function explorerSentence(word){
-  const templates = [
-    `I ${word} after school.`,
-    `We ${word} every day.`,
-    `She wants to ${word}.`,
-    `He can ${word} well.`,
-    `They will ${word} tomorrow.`,
-    `Please ${word} this.`,
-    `I need to ${word} now.`,
-    `Do you ${word} at home?`
-  ];
-  const t = templates[Math.floor(Math.random()*templates.length)];
-  return `문장 속 밑줄 단어의 뜻은?\n\n${t.replace(word, "____")}\n(____ = ${word})`;
-}
-
-function buildQuestionBank(){
-  const bank = [];
-
-  for(let i=0;i<40;i++){
-    const [w, m] = WORDS[i];
-    const {choices, answer} = makeChoices(i, WORDS, (x)=>x[1]);
-    bank.push({
-      id: `R${String(i+1).padStart(3,"0")}`,
-      section: "ROOKIE",
-      type: "mcq",
-      prompt: `단어의 뜻을 고르세요.\n\n${w}`,
-      choices, answer,
-      meta: {word:w, meaning:m}
-    });
-  }
-
-  for(let i=40;i<80;i++){
-    const [w, m] = WORDS[i];
-    const {choices, answer} = makeChoices(i, WORDS, (x)=>x[1]);
-    bank.push({
-      id: `E${String(i-39).padStart(3,"0")}`,
-      section: "EXPLORER",
-      type: "mcq",
-      prompt: explorerSentence(w),
-      choices, answer,
-      meta: {word:w, meaning:m}
-    });
-  }
-
-  for(let i=80;i<120;i++){
-    const [w, m] = WORDS[i];
-    bank.push({
-      id: `M${String(i-79).padStart(3,"0")}`,
-      section: "MASTER",
-      type: "short",
-      prompt: `뜻에 맞는 영어 단어 1개를 쓰세요.\n\n${m}`,
-      answers: [w],
-      meta: {word:w, meaning:m}
-    });
-  }
-
-  return bank;
-}
-
-const BANK = buildQuestionBank();
-function getSectionQuestions(sec){ return BANK.filter(q=>q.section===sec); }
-
-/* ===============================
-   3) 상태/점수
-   =============================== */
-const state = {
-  phase: "START",
-  player: {name:"", group:""},
-  section: "ROOKIE",
-  index: 0,
-  answers: {}, // qid -> {choiceIndex} or {text}
-  unlocked: {ROOKIE:true, EXPLORER:false, MASTER:false}
-};
-
-function score(){
-  let total=0;
-  const by={ROOKIE:0, EXPLORER:0, MASTER:0};
-  for(const q of BANK){
-    const a = state.answers[q.id];
-    if(!a) continue;
-    let ok=false;
-    if(q.type==="mcq"){
-      ok = (a.choiceIndex===q.answer);
-    } else {
-      ok = q.answers.some(x=>norm(x)===norm(a.text));
-    }
-    if(ok){ total++; by[q.section]++; }
-  }
-  return {total, by};
-}
-
-function levelFromTotal(t){
-  if(t<=50) return "ROOKIE";
-  if(t<=85) return "EXPLORER";
-  return "MASTER";
-}
-
-/* ===============================
-   4) 렌더링
-   =============================== */
-function el(tag, attrs, ...children){
-  const n=document.createElement(tag);
-  if(attrs){
-    for(const k of Object.keys(attrs)){
-      const v=attrs[k];
-      if(k==="class") n.className=v;
-      else if(k.startsWith("on") && typeof v==="function") n.addEventListener(k.slice(2).toLowerCase(), v);
-      else n.setAttribute(k, v);
-    }
-  }
-  for(const c of children){
-    if(c===null || c===undefined) continue;
-    if(typeof c==="string") n.appendChild(document.createTextNode(c));
-    else n.appendChild(c);
-  }
-  return n;
-}
-
-function sectionLabel(sec){
-  if(sec==="ROOKIE") return "🟢 ROOKIE";
-  if(sec==="EXPLORER") return "🔵 EXPLORER";
-  if(sec==="MASTER") return "🔴 MASTER";
-  return sec;
-}
-
-function renderStart(){
-  setStatus("Ready");
-  const main = el("div",{class:"card pad grow"},
-    el("div",{class:"big"},"시작하기"),
-    el("div",{class:"muted small"},"안정형 120문항(3섹션) 버전입니다. 아래 정보 입력 후 시작하세요."),
-    el("div",{class:"hr"}),
-    el("div",{},
-      el("label",{},"학생 이름(또는 닉네임)"),
-      el("input",{value:state.player.name, placeholder:"예: 1-3 김OO", oninput:(e)=>{state.player.name=e.target.value;}})
-    ),
-    el("div",{style:"height:10px"}),
-    el("div",{},
-      el("label",{},"반/학급(선택)"),
-      el("input",{value:state.player.group, placeholder:"예: 1학년 3반", oninput:(e)=>{state.player.group=e.target.value;}})
-    ),
-    el("div",{class:"hr"}),
-    el("div",{class:"row"},
-      el("button",{class:"btn primary", onclick:()=>{ state.phase="MAP"; render(); }},"🚀 게임 시작")
-    )
-  );
-
-  const sc = score();
-  const side = el("div",{class:"card pad side"},
-    el("div",{class:"big"},"현재 점수"),
-    el("div",{class:"muted small"},`총점 ${sc.total}/120`),
-    el("div",{class:"tagrow"},
-      el("span",{class:"tag"},`ROOKIE ${sc.by.ROOKIE}/40`),
-      el("span",{class:"tag"},`EXPLORER ${sc.by.EXPLORER}/40`),
-      el("span",{class:"tag"},`MASTER ${sc.by.MASTER}/40`)
-    ),
-    el("div",{class:"hr"}),
-    el("button",{class:"btn bad", onclick:()=>{
-      state.phase="START"; state.section="ROOKIE"; state.index=0;
-      state.answers={}; state.unlocked={ROOKIE:true,EXPLORER:false,MASTER:false};
-      render();
-    }},"🧹 초기화")
-  );
-
-  return el("div",{class:"row"}, main, side);
-}
-
-function renderMap(){
-  setStatus("Map");
-  const sc = score();
-  const main = el("div",{class:"card pad grow"},
-    el("div",{class:"big"},"Mission Map"),
-    el("div",{class:"muted small"},"통과 기준: 각 섹션 28점 이상이면 다음 섹션이 열립니다."),
-    el("div",{class:"hr"}),
-    el("div",{class:"map"},
-      node("ROOKIE","🟢 ROOKIE (1–40)","4지선다: 단어 뜻 고르기", true),
-      node("EXPLORER","🔵 EXPLORER (41–80)","4지선다: 문맥 의미 추론", state.unlocked.EXPLORER),
-      node("MASTER","🔴 MASTER (81–120)","단답형: 영어 단어 1개 쓰기", state.unlocked.MASTER)
-    ),
-    el("div",{class:"hr"}),
-    el("div",{class:"row"},
-      el("button",{class:"btn", onclick:()=>{state.phase="START"; render();}},"⬅️ 돌아가기"),
-      el("button",{class:"btn warn", onclick:()=>{state.phase="FINAL"; render();}},"📊 리포트")
-    )
-  );
-
-  const side = el("div",{class:"card pad side"},
-    el("div",{class:"big"},"점수"),
-    el("div",{class:"muted small"},`총점 ${sc.total}/120 · 레벨 ${levelFromTotal(sc.total)}`),
-    el("div",{class:"tagrow"},
-      el("span",{class:"tag"},`ROOKIE ${sc.by.ROOKIE}/40`),
-      el("span",{class:"tag"},`EXPLORER ${sc.by.EXPLORER}/40`),
-      el("span",{class:"tag"},`MASTER ${sc.by.MASTER}/40`)
-    )
-  );
-
-  return el("div",{class:"row"}, main, side);
-}
-
-function node(sec, title, desc, unlocked){
-  const box = el("div",{class:"node"+(unlocked?"":" locked")},
-    el("h3",{},title),
-    el("div",{class:"desc"},desc),
-    el("div",{class:"hr"}),
-    el("button",{class:"btn primary", onclick:()=>{
-      if(!unlocked) return;
-      state.section=sec; state.index=0; state.phase="PLAY"; render();
-    }}, unlocked ? "시작" : "잠김")
-  );
-  return box;
-}
-
-function currentQuestion(){
-  const qs = getSectionQuestions(state.section);
-  return qs[state.index] || null;
-}
-
-function renderPlay(){
-  const q = currentQuestion();
-  if(!q){ state.phase="SECTION_RESULT"; return renderSectionResult(); }
-  setStatus(sectionLabel(state.section));
-
-  const qs = getSectionQuestions(state.section);
-  const progress = Math.round((state.index/qs.length)*100);
-  const sc = score();
-
-  const main = el("div",{class:"card pad grow"},
-    el("div",{class:"hud"},
-      el("div",{},
-        el("div",{class:"muted small"},`${sectionLabel(state.section)} · 문항 ${state.index+1}/${qs.length}`),
-        el("div",{class:"meter"}, el("div",{class:"bar", style:`width:${progress}%`}))
-      ),
-      el("div",{}, el("div",{class:"muted small"},`총점 ${sc.total}/120`))
-    ),
-    el("div",{class:"qtext"}, q.prompt),
-
-    /* ✅ 정답 노출 방지(요청 반영)
-       - ROOKIE/EXPLORER(MCQ)에서는 Word 태그 표시
-       - MASTER(단답형)에서는 Word 태그 숨김 */
-    el("div",{class:"tagrow"},
-      el("span",{class:"tag"},`ID: ${q.id}`),
-      (q.type==="mcq" ? el("span",{class:"tag"},`Word: ${q.meta.word}`) : null)
-    ),
-
-    el("div",{class:"hr"})
-  );
-
-  if(q.type==="mcq"){
-    const prev = state.answers[q.id]?.choiceIndex;
-    const btns = q.choices.map((t,i)=>{
-      const label = String.fromCharCode(65+i)+") "+t;
-      return el("button",{
-        class:"btn choice"+(prev===i?" selected":""),
-        onclick:()=>{
-          state.answers[q.id]={choiceIndex:i};
-          render();
-        }
-      }, label);
-    });
-
-    main.appendChild(el("div",{class:"grid4"}, ...btns));
-    main.appendChild(el("div",{class:"hr"}));
-    main.appendChild(el("div",{class:"row"},
-      el("button",{class:"btn primary", onclick:()=>nextQuestion()},"다음 ▶"),
-      el("button",{class:"btn", onclick:()=>{state.phase="MAP"; render();}},"🗺️ 맵")
-    ));
-  } else {
-    const prevText = state.answers[q.id]?.text ?? "";
-    main.appendChild(el("input",{
-      value:prevText,
-      placeholder:"영어 단어 1개 입력",
-      autocomplete:"off",
-      autocapitalize:"none",
-      spellcheck:"false",
-      oninput:(e)=>{state.answers[q.id]={text:e.target.value};}
-    }));
-    main.appendChild(el("div",{class:"hr"}));
-    main.appendChild(el("div",{class:"row"},
-      el("button",{class:"btn primary", onclick:()=>nextQuestion()},"다음 ▶"),
-      el("button",{class:"btn", onclick:()=>{state.phase="MAP"; render();}},"🗺️ 맵")
-    ));
-  }
-
-  const side = el("div",{class:"card pad side"},
-    el("div",{class:"big"},"도구"),
-    el("div",{class:"muted small"},"이 버전은 안정성 우선(즉시 채점 표시 없음)."),
-    el("div",{class:"hr"}),
-    el("button",{class:"btn warn", onclick:()=>{state.phase="SECTION_RESULT"; render();}},"📌 섹션 결과"),
-    el("button",{class:"btn bad", onclick:()=>{state.phase="START"; state.section="ROOKIE"; state.index=0; state.answers={}; state.unlocked={ROOKIE:true,EXPLORER:false,MASTER:false}; render();}},"🧹 초기화")
-  );
-
-  return el("div",{class:"row"}, main, side);
-}
-
-function nextQuestion(){
-  const qs = getSectionQuestions(state.section);
-  state.index = clamp(state.index+1, 0, qs.length);
-  if(state.index>=qs.length){
-    state.phase="SECTION_RESULT";
-  }
-  render();
-}
-
-function renderSectionResult(){
-  setStatus("Section Result");
-  const qs = getSectionQuestions(state.section);
-  const sc = score();
-  const secScore = sc.by[state.section];
-  const passed = secScore >= 28;
-
-  if(state.section==="ROOKIE" && passed) state.unlocked.EXPLORER=true;
-  if(state.section==="EXPLORER" && passed) state.unlocked.MASTER=true;
-
-  const nextSec = state.section==="ROOKIE" ? "EXPLORER" : (state.section==="EXPLORER" ? "MASTER" : null);
-
-  const main = el("div",{class:"card pad grow"},
-    el("div",{class:"big"},`${sectionLabel(state.section)} 결과`),
-    el("div",{class:"muted small"},`점수: ${secScore}/${qs.length} · 통과 기준: 28점`),
-    el("div",{class:"hr"}),
-    el("div",{class:"tagrow"},
-      el("span",{class:"tag"}, passed ? "✅ PASS" : "⚠️ TRY AGAIN"),
-      el("span",{class:"tag"}, `총점 ${sc.total}/120 · 레벨 ${levelFromTotal(sc.total)}`)
-    ),
-    el("div",{class:"hr"}),
-    el("div",{class:"row"},
-      nextSec ? el("button",{class:"btn primary", onclick:()=>{
-        if(!passed) return;
-        state.section=nextSec; state.index=0; state.phase="PLAY"; render();
-      }}, `다음 섹션 (${sectionLabel(nextSec)})`) : null,
-      el("button",{class:"btn good", onclick:()=>{state.phase="MAP"; render();}},"🗺️ 맵"),
-      el("button",{class:"btn", onclick:()=>{state.index=0; state.phase="PLAY"; render();}},"🔁 다시 풀기"),
-      el("button",{class:"btn warn", onclick:()=>{state.phase="FINAL"; render();}},"📊 리포트")
-    )
-  );
-
-  const side = el("div",{class:"card pad side"},
-    el("div",{class:"big"},"빠른 이동"),
-    el("button",{class:"btn", onclick:()=>{state.phase="MAP"; render();}},"🗺️ 맵"),
-    el("button",{class:"btn bad", onclick:()=>{state.phase="START"; state.section="ROOKIE"; state.index=0; state.answers={}; state.unlocked={ROOKIE:true,EXPLORER:false,MASTER:false}; render();}},"🧹 초기화")
-  );
-
-  return el("div",{class:"row"}, main, side);
-}
-async function submitResultToSheet() {
-  if (!SHEETS_WEBAPP_URL || !SHEETS_WEBAPP_URL.includes("/exec")) {
-    alert("교사용 저장 URL이 설정되지 않았습니다. (/exec URL 확인)");
-    return;
-  }
-
-  const sc = score();
-  const payload = {
-    player_name: state.player?.name || "",
-    player_group: state.player?.group || "",
-    total: sc.total,
-    level: levelFromTotal(sc.total),
-    rookie: sc.by.ROOKIE,
-    explorer: sc.by.EXPLORER,
-    master: sc.by.MASTER,
-    unlocked_explorer: !!state.unlocked?.EXPLORER,
-    unlocked_master: !!state.unlocked?.MASTER,
-    answers: state.answers || {}
+  // ====== Recommended defaults ======
+  const DEFAULTS = {
+    mode: "TEST",
+    shuffleChoices: true,
+    timerEnabled: false,
+    unlockRule: "score28"
   };
 
-  try {
-    const res = await fetch(SHEETS_WEBAPP_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(payload)
-    });
+  const KEY = { state: "wm_state_v1", attempts: "wm_attempts_v1" };
 
-    const text = await res.text();
-    let out;
-    try { out = JSON.parse(text); } catch { out = { ok:false, raw:text }; }
-
-    if (out.ok) alert("✅ 제출 완료! 구글시트에 저장되었습니다.");
-    else alert("❌ 제출 실패: " + (out.error || out.raw || "unknown"));
-  } catch (e) {
-    alert("❌ 제출 중 오류: " + String(e));
+  function nowISO(){ return new Date().toISOString(); }
+  function clamp(n,a,b){ return Math.max(a, Math.min(b,n)); }
+  function toast(msg){
+    const t=document.getElementById("toast");
+    t.textContent=msg; t.style.display="block";
+    clearTimeout(toast._timer);
+    toast._timer=setTimeout(()=>t.style.display="none", 2400);
   }
-}
-function renderFinal(){
-  setStatus("Report");
-  const sc = score();
-  const level = levelFromTotal(sc.total);
+  function setStatus(text){ document.getElementById("statusPill").textContent=text; }
 
-  const main = el("div",{class:"card pad grow"},
-    el("div",{class:"big"},"최종 리포트"),
-    el("div",{class:"muted small"},`이름: ${state.player.name || "(미입력)"} · 반: ${state.player.group || "(미입력)"}\n총점: ${sc.total}/120 · 레벨: ${level}`),
-    el("div",{class:"hr"}),
-    el("div",{class:"tagrow"},
-      el("span",{class:"tag"},`ROOKIE ${sc.by.ROOKIE}/40`),
-      el("span",{class:"tag"},`EXPLORER ${sc.by.EXPLORER}/40`),
-      el("span",{class:"tag"},`MASTER ${sc.by.MASTER}/40`)
-    ),
-    el("div",{class:"row"},
-      el("button",{class:"btn primary", onclick:()=>submitResultToSheet()},"☁️ 결과 제출"),
-      el("button",{class:"btn", onclick:()=>{state.phase="MAP"; render();}},"🗺️ 맵"),
-      el("button",{class:"btn bad", onclick:()=>{state.phase="START"; state.section="ROOKIE"; state.index=0; state.answers={}; state.unlocked={ROOKIE:true,EXPLORER:false,MASTER:false}; render();}},"처음부터")
-),
+  function saveState(s){ localStorage.setItem(KEY.state, JSON.stringify(s)); }
+  function loadState(){ try{ const r=localStorage.getItem(KEY.state); return r?JSON.parse(r):null; }catch(e){ return null; } }
+  function saveAttempts(a){ localStorage.setItem(KEY.attempts, JSON.stringify(a)); }
+  function loadAttempts(){ try{ const r=localStorage.getItem(KEY.attempts); return r?JSON.parse(r):[]; }catch(e){ return []; } }
 
-  const side = el("div",{class:"card pad side"},
-    el("div",{class:"big"},"다음 단계"),
-    el("div",{class:"muted small"},"여기까지가 ‘안정형 120문항’입니다.\n원하시면 다음으로 구글시트 자동 수집(반 전체 자동 저장) 기능을 ‘깨끗하게’ 붙여드립니다."),
-    el("div",{class:"hr"}),
-    el("button",{class:"btn primary", onclick:()=>{alert("다음 단계: 구글시트 자동 수집 버전으로 업그레이드 진행!");}},"☁️ 자동 수집 붙이기(다음)")
-  );
+  function download(filename, content, type="application/json"){
+    const blob=new Blob([content], {type});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url; a.download=filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  }
+  function toCSV(rows){
+    const esc=(v)=>{
+      const s=String(v ?? "");
+      if (/[",\n]/.test(s)) return '"' + s.replaceAll('"','""') + '"';
+      return s;
+    };
+    return rows.map(r=>r.map(esc).join(",")).join("\n");
+  }
+  function normalizeAnswer(text, rules){
+    let t=(text ?? "");
+    if (rules?.includes("trim")) t=t.trim();
+    if (rules?.includes("lowercase")) t=t.toLowerCase();
+    if (rules?.includes("collapseSpaces")) t=t.replace(/\s+/g," ");
+    return t;
+  }
+  function makeSessionId(){ return "S"+Math.random().toString(16).slice(2)+"-"+Date.now().toString(16); }
+  function sectionLabel(sec){
+    if (sec==="ROOKIE") return "🟢 ROOKIE";
+    if (sec==="EXPLORER") return "🔵 EXPLORER";
+    if (sec==="MASTER") return "🔴 MASTER";
+    return sec;
+  }
+  function getSectionQuestions(section){ return QUESTION_BANK.filter(q=>q.section===section); }
 
-  return el("div",{class:"row"}, main, side);
-}
+  function computeScore(answersById){
+    let total=0;
+    const bySection={ROOKIE:0, EXPLORER:0, MASTER:0};
+    for (const q of QUESTION_BANK){
+      const a=answersById[q.id];
+      if (!a) continue;
+      let correct=false;
+      if (q.type==="mcq"){
+        correct = (a.choiceIndex === q.answer);
+      } else {
+        const norm=normalizeAnswer(a.text, q.normalize);
+        correct = (q.answers||[]).some(x=>normalizeAnswer(x, q.normalize)===norm);
+      }
+      if (correct){ total += 1; bySection[q.section] += 1; }
+    }
+    return { total, bySection };
+  }
+  function levelFromScore(score){
+    if (score <= 50) return "ROOKIE";
+    if (score <= 85) return "EXPLORER";
+    return "MASTER";
+  }
+  function starsForSection(secScore){
+    if (secScore >= 36) return 3;
+    if (secScore >= 30) return 2;
+    if (secScore >= 24) return 1;
+    return 0;
+  }
 
-function render(){
-  const root = $("app");
-  root.innerHTML="";
-  if(state.phase==="START") root.appendChild(renderStart());
-  else if(state.phase==="MAP") root.appendChild(renderMap());
-  else if(state.phase==="PLAY") root.appendChild(renderPlay());
-  else if(state.phase==="SECTION_RESULT") root.appendChild(renderSectionResult());
-  else if(state.phase==="FINAL") root.appendChild(renderFinal());
-  else { state.phase="START"; root.appendChild(renderStart()); }
-}
+  const initial = {
+    phase: "START",
+    config: {...DEFAULTS},
+    player: { name:"", group:"" },
+    sessionId: null,
+    section: "ROOKIE",
+    indexInSection: 0,
+    answers: {},
+    unlocked: { ROOKIE:true, EXPLORER:false, MASTER:false },
+    startedAt: null,
+    finishedAt: null
+  };
 
-render();
-  function submitResultToSheet(){
-  alert("제출 테스트");
-}
+  let state = loadState() || initial;
+  let attempts = loadAttempts();
+
+  function resetAll(){
+    state = JSON.parse(JSON.stringify(initial));
+    saveState(state);
+    toast("초기화 완료");
+    render();
+  }
+
+  function startNewSession(){
+    state.sessionId = makeSessionId();
+    state.startedAt = nowISO();
+    state.finishedAt = null;
+    state.answers = {};
+    state.section = "ROOKIE";
+    state.indexInSection = 0;
+    state.unlocked = { ROOKIE:true, EXPLORER:false, MASTER:false };
+    state.phase = "MAP";
+    saveState(state);
+    render();
+  }
+
+  function beginSection(section){
+    if (!state.unlocked[section]){ toast("잠금 상태입니다. 이전 미션을 통과하세요."); return; }
+    state.section = section;
+    state.indexInSection = 0;
+    state.phase = "PLAY";
+    saveState(state);
+    render();
+  }
+
+  function getCurrentQuestion(){
+    const qs = getSectionQuestions(state.section);
+    return qs[state.indexInSection] || null;
+  }
+
+  function shuffledChoices(q){
+    if (!q.choices) return null;
+    const key = "choicesShuffle:" + state.sessionId + ":" + q.id;
+    const existing = state.answers[key];
+    if (existing && Array.isArray(existing.order)) return existing.order;
+    const order = q.choices.map((_,i)=>i);
+    if (state.config.shuffleChoices){
+      for (let i=order.length-1; i>0; i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [order[i], order[j]] = [order[j], order[i]];
+      }
+    }
+    state.answers[key] = {order};
+    saveState(state);
+    return order;
+  }
+
+  function submitMCQ(q, displayedIndex){
+    const order = shuffledChoices(q);
+    const originalIndex = order[displayedIndex];
+    state.answers[q.id] = { choiceIndex: originalIndex, ts: nowISO() };
+    saveState(state);
+  }
+
+  function submitShort(q, text){
+    state.answers[q.id] = { text, ts: nowISO() };
+    saveState(state);
+  }
+
+  function nextQuestion(){
+    const qs = getSectionQuestions(state.section);
+    state.indexInSection = clamp(state.indexInSection + 1, 0, qs.length);
+    if (state.indexInSection >= qs.length){
+      const score = computeScore(state.answers).bySection[state.section];
+      if (state.config.unlockRule === "score28"){
+        if (state.section==="ROOKIE" && score >= 28) state.unlocked.EXPLORER = true;
+        if (state.section==="EXPLORER" && score >= 28) state.unlocked.MASTER = true;
+      } else {
+        if (state.section==="ROOKIE") state.unlocked.EXPLORER = true;
+        if (state.section==="EXPLORER") state.unlocked.MASTER = true;
+      }
+      state.phase = "SECTION_RESULT";
+      saveState(state);
+    } else {
+      saveState(state);
+    }
+    render();
+  }
+
+  function finishAll(){
+    state.finishedAt = nowISO();
+    state.phase = "FINAL";
+    const score = computeScore(state.answers);
+    const attempt = {
+      sessionId: state.sessionId,
+      player: state.player,
+      startedAt: state.startedAt,
+      finishedAt: state.finishedAt,
+      config: state.config,
+      scoreTotal: score.total,
+      scoreBySection: score.bySection,
+      level: levelFromScore(score.total),
+      answers: state.answers
+    };
+    attempts.unshift(attempt);
+    saveAttempts(attempts);
+    saveState(state);
+    render();
+  }
+
+  function exportLatestJSON(){
+    const attempt = attempts[0];
+    if (!attempt){ toast("저장된 시도가 없습니다."); return; }
+    download(`word-mission-attempt-${attempt.sessionId}.json`, JSON.stringify(attempt, null, 2), "application/json");
+    toast("JSON 저장 완료");
+  }
+
+  function exportLatestCSV(){
+    const attempt = attempts[0];
+    if (!attempt){ toast("저장된 시도가 없습니다."); return; }
+    const rows = [];
+    rows.push(["sessionId","name","group","startedAt","finishedAt","level","scoreTotal","rookie","explorer","master"]);
+    rows.push([
+      attempt.sessionId,
+      attempt.player?.name ?? "",
+      attempt.player?.group ?? "",
+      attempt.startedAt,
+      attempt.finishedAt,
+      attempt.level,
+      attempt.scoreTotal,
+      attempt.scoreBySection?.ROOKIE ?? 0,
+      attempt.scoreBySection?.EXPLORER ?? 0,
+      attempt.scoreBySection?.MASTER ?? 0
+    ]);
+    rows.push([]);
+    rows.push(["questionId","section","type","prompt","studentAnswer","isCorrect"]);
+    for (const q of QUESTION_BANK){
+      const a = attempt.answers[q.id];
+      let student="";
+      let correct=false;
+      if (q.type==="mcq"){
+        const idx = a?.choiceIndex;
+        student = (idx===undefined) ? "" : (q.choices[idx] ?? "");
+        correct = (idx === q.answer);
+      } else {
+        student = a?.text ?? "";
+        const norm = normalizeAnswer(student, q.normalize);
+        correct = (q.answers||[]).some(x=>normalizeAnswer(x, q.normalize)===norm);
+      }
+      rows.push([q.id, q.section, q.type, q.prompt.replaceAll("\n"," "), student, correct ? "1":"0"]);
+    }
+    download(`word-mission-attempt-${attempt.sessionId}.csv`, toCSV(rows), "text/csv;charset=utf-8");
+    toast("CSV 저장 완료");
+  }
+
+  function exportAllAttemptsJSON(){
+    download("word-mission-all-attempts.json", JSON.stringify(attempts, null, 2), "application/json");
+    toast("전체 기록 JSON 저장 완료");
+  }
+
+  function importAttemptJSON(file){
+    const reader = new FileReader();
+    reader.onload = () => {
+      try{
+        const obj = JSON.parse(reader.result);
+        if (!obj.sessionId || !obj.answers) throw new Error("형식 오류");
+        attempts.unshift(obj);
+        saveAttempts(attempts);
+        toast("가져오기 완료 (최근 기록에 추가)");
+        render();
+      }catch(e){
+        toast("가져오기 실패: JSON 형식을 확인하세요.");
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function el(tag, attrs={}, ...children){
+    const node = document.createElement(tag);
+    for (const [k,v] of Object.entries(attrs)){
+      if (k === "class") node.className = v;
+      else if (k.startsWith("on") && typeof v === "function") node.addEventListener(k.slice(2).toLowerCase(), v);
+      else node.setAttribute(k, v);
+    }
+    for (const c of children){
+      if (c === null || c === undefined) continue;
+      if (typeof c === "string") node.appendChild(document.createTextNode(c));
+      else node.appendChild(c);
+    }
+    return node;
+  }
+
+  function renderStart(){
+    setStatus("Ready");
+    const main = el("div", {class:"card pad grow"},
+      el("div", {class:"big"}, "시작하기"),
+      el("div", {class:"muted small"}, "추천 설정으로 바로 진행됩니다 (TEST 모드 · 타이머 OFF · 보기 셔플 ON)."),
+      el("div", {class:"hr"}),
+      el("div", {class:"grid2"},
+        el("div", {}, el("label", {}, "학생 이름(또는 닉네임)"),
+          el("input", {value: state.player.name, placeholder:"예: 1-3 김OO", oninput:(e)=>{ state.player.name=e.target.value; saveState(state); }})
+        ),
+        el("div", {}, el("label", {}, "반/학급(선택)"),
+          el("input", {value: state.player.group, placeholder:"예: 1학년 3반", oninput:(e)=>{ state.player.group=e.target.value; saveState(state); }})
+        ),
+      ),
+      el("div", {class:"hr"}),
+      el("div", {class:"row"},
+        el("button", {class:"btn primary", onclick: ()=>startNewSession()}, "🚀 게임 시작"),
+        el("button", {class:"btn warn", onclick: ()=>{ state.phase="MAP"; saveState(state); render(); }}, "🗺️ 맵으로"),
+        el("button", {class:"btn bad", onclick: ()=>resetAll()}, "🧹 전체 초기화")
+      )
+    );
+
+    const side = el("div", {class:"card pad side"},
+      el("div", {class:"big"}, "교사용 파일 저장"),
+      el("div", {class:"muted small"}, "게임 기록을 JSON/CSV로 저장해 두고두고 확인할 수 있어요."),
+      el("div", {class:"hr"}),
+      el("button", {class:"btn slim good", onclick: ()=>exportAllAttemptsJSON()}, "📦 전체 기록 JSON 저장"),
+      el("div", {class:"hr"}),
+      el("label", {}, "기록 JSON 가져오기"),
+      el("input", {type:"file", accept:"application/json", onchange:(e)=>{ const f=e.target.files?.[0]; if (f) importAttemptJSON(f); }})
+    );
+
+    return el("div", {class:"row"}, main, side);
+  }
+
+  function nodeCard(section, title, desc){
+    const unlocked = !!state.unlocked[section];
+    const score = computeScore(state.answers).bySection[section];
+    const stars = starsForSection(score);
+    return el("div", {class:"node" + (unlocked ? "" : " locked")},
+      el("h3", {}, title),
+      el("div", {class:"desc"}, desc),
+      el("div", {class:"stars"}, "★".repeat(stars) + "☆".repeat(3-stars)),
+      el("div", {class:"hr"}),
+      el("button", {class:"btn primary", onclick: ()=>beginSection(section)}, unlocked ? "시작" : "잠김", )
+    );
+  }
+
+  function renderMap(){
+    setStatus("Map");
+    const main = el("div", {class:"card pad grow"},
+      el("div", {class:"big"}, "Mission Map"),
+      el("div", {class:"muted small"}, "ROOKIE 28점 이상 → EXPLORER Unlock · EXPLORER 28점 이상 → MASTER Unlock"),
+      el("div", {class:"hr"}),
+      el("div", {class:"map"},
+        nodeCard("ROOKIE","🟢 ROOKIE (1–40)","4지선다: 뜻/상황/빈칸"),
+        nodeCard("EXPLORER","🔵 EXPLORER (41–80)","4지선다: 문맥 의미 추론"),
+        nodeCard("MASTER","🔴 MASTER (81–120)","단답형: 1단어 쓰기")
+      ),
+      el("div", {class:"hr"}),
+      el("div", {class:"row"},
+        el("button", {class:"btn", onclick: ()=>{ state.phase="START"; saveState(state); render(); }}, "⬅️ 시작"),
+        el("button", {class:"btn warn", onclick: ()=>{ state.phase="FINAL"; saveState(state); render(); }}, "📊 리포트(임시)")
+      )
+    );
+
+    const sc = computeScore(state.answers);
+    const side = el("div", {class:"card pad side"},
+      el("div", {class:"big"}, "현재 점수"),
+      el("div", {class:"muted small"}, `총점 ${sc.total}/120`),
+      el("div", {class:"tagrow"},
+        el("span", {class:"tag"}, `ROOKIE ${sc.bySection.ROOKIE}/40`),
+        el("span", {class:"tag"}, `EXPLORER ${sc.bySection.EXPLORER}/40`),
+        el("span", {class:"tag"}, `MASTER ${sc.bySection.MASTER}/40`)
+      ),
+      el("div", {class:"hr"}),
+      el("button", {class:"btn bad slim", onclick: ()=>resetAll()}, "🧹 초기화")
+    );
+
+    return el("div", {class:"row"}, main, side);
+  }
+
+  function renderPlay(){
+    const q = getCurrentQuestion();
+    if (!q){ state.phase="SECTION_RESULT"; saveState(state); return renderSectionResult(); }
+    setStatus(sectionLabel(state.section));
+
+    const qs = getSectionQuestions(state.section);
+    const progress = Math.round((state.indexInSection/qs.length)*100);
+    const sc = computeScore(state.answers);
+
+    const meter = el("div", {class:"meter"}, el("div", {class:"bar", style:`width:${progress}%`}));
+    const hud = el("div", {class:"hud"},
+      el("div", {}, el("div", {class:"muted small"}, `${sectionLabel(state.section)} · 문항 ${state.indexInSection+1}/${qs.length}`), meter),
+      el("div", {}, el("div", {class:"muted small"}, `총점 ${sc.total}/120`))
+    );
+
+    const main = el("div", {class:"card pad grow"},
+      hud,
+      el("div", {class:"qtext"}, q.prompt),
+      el("div", {class:"tagrow"}, ...(q.tags||[]).map(t=>el("span", {class:"tag"}, t))),
+      el("div", {class:"hr"})
+    );
+
+    if (q.type==="mcq"){
+      const order = shuffledChoices(q);
+      const displayed = order.map(i=>q.choices[i]);
+      const prev = state.answers[q.id]?.choiceIndex;
+      const selectedDisplayedIndex = (prev===undefined) ? null : order.indexOf(prev);
+
+      const btns = displayed.map((text,i)=>{
+        const isSelected = (i===selectedDisplayedIndex);
+        return el("button", {class:"btn choice"+(isSelected?" selected":""), onclick: ()=>{ submitMCQ(q,i); render(); }}, String.fromCharCode(65+i)+") "+text);
+      });
+
+      main.appendChild(el("div", {class:"grid4"}, ...btns));
+      main.appendChild(el("div", {class:"hr"}));
+      main.appendChild(el("div", {class:"row"},
+        el("button", {class:"btn primary", onclick: ()=>nextQuestion()}, "다음 ▶"),
+        el("button", {class:"btn", onclick: ()=>{ state.phase="MAP"; saveState(state); render(); }}, "🗺️ 맵")
+      ));
+    } else {
+      const prevText = state.answers[q.id]?.text ?? "";
+      main.appendChild(el("input", {value: prevText, placeholder:"정답 단어 1개 입력", oninput:(e)=>{ submitShort(q,e.target.value); }}));
+      main.appendChild(el("div", {class:"hr"}));
+      main.appendChild(el("div", {class:"row"},
+        el("button", {class:"btn primary", onclick: ()=>nextQuestion()}, "다음 ▶"),
+        el("button", {class:"btn", onclick: ()=>{ state.phase="MAP"; saveState(state); render(); }}, "🗺️ 맵")
+      ));
+    }
+
+    const side = el("div", {class:"card pad side"},
+      el("div", {class:"big"}, "도구"),
+      el("div", {class:"muted small"}, "TEST 모드: 정답 즉시 공개 없음"),
+      el("div", {class:"hr"}),
+      el("button", {class:"btn slim warn", onclick: ()=>{ state.phase="SECTION_RESULT"; saveState(state); render(); }}, "📌 섹션 결과"),
+      el("button", {class:"btn slim bad", onclick: ()=>resetAll()}, "🧹 초기화")
+    );
+
+    return el("div", {class:"row"}, main, side);
+  }
+
+  function renderSectionResult(){
+    setStatus("Section Result");
+    const qs = getSectionQuestions(state.section);
+    const score = computeScore(state.answers).bySection[state.section];
+    const passed = score >= 28;
+    const nextSec = (state.section==="ROOKIE") ? "EXPLORER" : (state.section==="EXPLORER") ? "MASTER" : null;
+
+    const main = el("div", {class:"card pad grow"},
+      el("div", {class:"big"}, `${sectionLabel(state.section)} 결과`),
+      el("div", {class:"muted small"}, `점수: ${score}/${qs.length} · 통과 기준: 28점`),
+      el("div", {class:"hr"}),
+      el("div", {class:"tagrow"},
+        el("span", {class:"tag"}, passed ? "✅ PASS" : "⚠️ TRY AGAIN"),
+        el("span", {class:"tag"}, `별: ${"★".repeat(starsForSection(score))}${"☆".repeat(3-starsForSection(score))}`)
+      ),
+      el("div", {class:"hr"}),
+      el("div", {class:"row"},
+        nextSec ? el("button", {class:"btn primary", onclick: ()=>{
+          if (!passed){ toast("28점 이상이면 다음 미션이 열립니다."); return; }
+          if (state.section==="ROOKIE") state.unlocked.EXPLORER = true;
+          if (state.section==="EXPLORER") state.unlocked.MASTER = true;
+          saveState(state);
+          beginSection(nextSec);
+        }}, `다음 미션 (${sectionLabel(nextSec)})`) : null,
+        el("button", {class:"btn good", onclick: ()=>{ state.phase="MAP"; saveState(state); render(); }}, "🗺️ 맵"),
+        el("button", {class:"btn", onclick: ()=>beginSection(state.section)}, "🔁 다시")
+      ),
+      el("div", {class:"hr"}),
+      (state.section==="MASTER"
+        ? el("button", {class:"btn primary", onclick: ()=>finishAll()}, "🏁 최종 리포트")
+        : el("div", {class:"muted small"}, "MASTER까지 완료하면 최종 리포트/파일 저장이 활성화됩니다.")
+      )
+    );
+
+    const side = el("div", {class:"card pad side"},
+      el("div", {class:"big"}, "빠른 이동"),
+      el("button", {class:"btn slim", onclick: ()=>{ state.phase="MAP"; saveState(state); render(); }}, "🗺️ 맵"),
+      el("button", {class:"btn slim bad", onclick: ()=>resetAll()}, "🧹 초기화")
+    );
+
+    return el("div", {class:"row"}, main, side);
+  }
+
+  function renderFinal(){
+    setStatus("Report");
+    const score = computeScore(state.answers);
+    const level = levelFromScore(score.total);
+
+    const main = el("div", {class:"card pad grow"},
+      el("div", {class:"big"}, "최종 리포트"),
+      el("div", {class:"muted small"}, `총점: ${score.total}/120 · 레벨: ${level}`),
+      el("div", {class:"hr"}),
+      el("div", {class:"tagrow"},
+        el("span", {class:"tag"}, `ROOKIE ${score.bySection.ROOKIE}/40`),
+        el("span", {class:"tag"}, `EXPLORER ${score.bySection.EXPLORER}/40`),
+        el("span", {class:"tag"}, `MASTER ${score.bySection.MASTER}/40`)
+      ),
+      el("div", {class:"hr"}),
+      el("div", {class:"row"},
+        el("button", {class:"btn primary", onclick: ()=>exportLatestJSON()}, "📥 최근 결과 JSON 저장"),
+        el("button", {class:"btn good", onclick: ()=>exportLatestCSV()}, "📥 최근 결과 CSV 저장"),
+        el("button", {class:"btn warn", onclick: ()=>exportAllAttemptsJSON()}, "📦 전체 기록 JSON 저장"),
+      ),
+      el("div", {class:"hr"}),
+      el("div", {class:"row"},
+        el("button", {class:"btn", onclick: ()=>{ state.phase="MAP"; saveState(state); render(); }}, "🗺️ 맵"),
+        el("button", {class:"btn bad", onclick: ()=>resetAll()}, "🧹 초기화")
+      )
+    );
+
+    const side = el("div", {class:"card pad side"},
+      el("div", {class:"big"}, "가져오기"),
+      el("label", {}, "기록 JSON 가져오기"),
+      el("input", {type:"file", accept:"application/json", onchange:(e)=>{ const f=e.target.files?.[0]; if (f) importAttemptJSON(f); }})
+    );
+
+    return el("div", {class:"row"}, main, side);
+  }
+
+  function render(){
+    const root = document.getElementById("app");
+    root.innerHTML = "";
+    if (state.phase==="START") root.appendChild(renderStart());
+    else if (state.phase==="MAP") root.appendChild(renderMap());
+    else if (state.phase==="PLAY") root.appendChild(renderPlay());
+    else if (state.phase==="SECTION_RESULT") root.appendChild(renderSectionResult());
+    else if (state.phase==="FINAL") root.appendChild(renderFinal());
+    else root.appendChild(renderStart());
+  }
+
+  if (!state.config) state.config = {...DEFAULTS};
+  if (!state.unlocked) state.unlocked = { ROOKIE:true, EXPLORER:false, MASTER:false };
+  if (!state.player) state.player = {name:"", group:""};
+  saveState(state);
+  render();
 </script>
 </body>
 </html>
